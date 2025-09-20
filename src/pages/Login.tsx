@@ -15,9 +15,9 @@ const Login = () => {
     localStorage.setItem('userType', userType);
     
     if (userType === 'patient') {
-      navigate('/paciente');
+      navigate('/registro-paciente');
     } else {
-      navigate('/psicologo');
+      navigate('/registro-psicologo');
     }
   };
 
@@ -34,7 +34,9 @@ const Login = () => {
             />
           </div>
           <h1 className="text-3xl font-bold text-primary mb-2">EmotiTrack</h1>
-          <p className="text-muted text-lg">Tu bienestar emocional importa</p>
+          <p className="text-muted text-center max-w-sm mx-auto leading-relaxed">
+            Bienvenido a EmotiTrack: tu herramienta científica para comprender y acompañar el estado emocional.
+          </p>
         </div>
 
         {/* Login options */}

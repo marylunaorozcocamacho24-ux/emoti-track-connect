@@ -11,14 +11,26 @@ export const Navigation = ({ userType = 'patient' }: NavigationProps) => {
     <nav className="fixed bottom-0 left-0 right-0 bg-primary border-t border-border/20 shadow-2xl">
       <div className="max-w-md mx-auto px-4">
         <div className="flex justify-around items-center py-2">
-          <NavItem to="/" icon={Home} label="Inicio" />
           <NavItem 
-            to={userType === 'patient' ? "/registro" : "/pacientes"} 
-            icon={PenTool} 
-            label={userType === 'patient' ? "Registro" : "Pacientes"} 
+            to={userType === 'patient' ? "/paciente" : "/psicologo"} 
+            icon={Home} 
+            label="Inicio" 
           />
-          <NavItem to="/estadisticas" icon={BarChart3} label="Estadísticas" />
-          <NavItem to="/perfil" icon={User} label="Perfil" />
+          <NavItem 
+            to={userType === 'patient' ? "/evaluacion-diaria" : "/pacientes"} 
+            icon={PenTool} 
+            label={userType === 'patient' ? "Evaluación" : "Pacientes"} 
+          />
+          <NavItem 
+            to={userType === 'patient' ? "/historial" : "/estadisticas"} 
+            icon={BarChart3} 
+            label={userType === 'patient' ? "Historial" : "Estadísticas"} 
+          />
+          <NavItem 
+            to="/perfil" 
+            icon={User} 
+            label="Perfil" 
+          />
         </div>
       </div>
     </nav>

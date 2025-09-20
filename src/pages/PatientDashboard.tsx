@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Frown, AlertTriangle, Smile } from "lucide-react";
+import { Heart, Frown, AlertTriangle, Smile, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const emotions = [
@@ -14,6 +15,7 @@ const emotions = [
 ];
 
 const PatientDashboard = () => {
+  const navigate = useNavigate();
   const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
   const [dailyNote, setDailyNote] = useState('');
   const userName = "Ana"; // This would come from user context/auth
@@ -71,6 +73,27 @@ const PatientDashboard = () => {
         </Card>
 
         {/* Daily notes section */}
+        <Card className="card-soft">
+          <h2 className="text-lg font-semibold text-primary mb-4">
+            Evaluación científica diaria
+          </h2>
+          
+          <div className="space-y-4">
+            <p className="text-sm text-muted leading-relaxed">
+              Completa una breve evaluación psicológica (PHQ-2, GAD-2, o PANAS) para monitorear tu bienestar.
+            </p>
+            
+            <Button
+              onClick={() => navigate('/evaluacion-diaria')}
+              className="pill-button w-full bg-lavender hover:bg-lavender/90 text-white"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              Iniciar evaluación (1 min)
+            </Button>
+          </div>
+        </Card>
+
+        {/* Quick notes section */}
         <Card className="card-soft">
           <h2 className="text-lg font-semibold text-primary mb-4">
             Notas del día
