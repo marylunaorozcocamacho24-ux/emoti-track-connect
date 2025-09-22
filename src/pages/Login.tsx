@@ -53,10 +53,10 @@ const Login = () => {
           <div className="space-y-4">
             <Button
               onClick={() => handleLogin('patient')}
-              className="pill-button w-full bg-sky-blue hover:bg-sky-blue/90 text-white shadow-md hover:shadow-lg rounded-2xl"
+              className="pill-button w-full bg-sky-blue hover:bg-sky-blue/90 text-primary shadow-lg hover:shadow-xl rounded-3xl border border-primary/10"
               size="lg"
             >
-              <span className="text-lg mr-3">👤</span>
+              <span className="text-lg mr-3">🙂</span>
               Ingresar como paciente
             </Button>
             
