@@ -35,15 +35,15 @@ const EvaluationResults = () => {
         level: 'Alto',
         color: 'bg-emotion-anxious',
         textColor: 'text-emotion-anxious',
-        description: 'Posibles síntomas depresivos detectados',
-        suggestion: 'Es importante hablar con tu psicólogo sobre cómo te has sentido últimamente. Mientras tanto, intenta mantener una rutina diaria y realiza actividades que antes disfrutabas, aunque sea por períodos cortos.'
+        description: 'Notamos que te sientes triste 😟',
+        suggestion: 'Es normal sentirse así a veces. Habla con tu psicólogo sobre cómo te sientes. Mientras tanto, intenta hacer una actividad pequeña que antes disfrutabas. ¡Estás dando pasos importantes! 💙'
       };
       if (score >= 1) return {
         level: 'Moderado',
         color: 'bg-emotion-sad',
         textColor: 'text-emotion-sad',
-        description: 'Algunos síntomas presentes',
-        suggestion: 'Nota algunas señales que vale la pena atender. Considera practicar técnicas de relajación y asegúrate de mantener conexiones sociales positivas.'
+        description: 'Algunas emociones necesitan atención 😌',
+        suggestion: 'Es bueno que notes cómo te sientes. Practica técnicas de relajación y mantén contacto con personas que te hacen bien. ¡Vas por buen camino!'
       };
       return {
         level: 'Bajo',
@@ -59,8 +59,8 @@ const EvaluationResults = () => {
         level: 'Alto',
         color: 'bg-emotion-anxious',
         textColor: 'text-emotion-anxious',
-        description: 'Niveles elevados de ansiedad',
-        suggestion: 'Los síntomas de ansiedad pueden ser muy manejables con las técnicas adecuadas. Practica la respiración diafragmática: inhala por 4 segundos, mantén por 4, exhala por 6. Repite este ciclo 5 veces cuando te sientas ansioso.'
+        description: 'Notamos que te sientes ansioso 😟',
+        suggestion: 'Respira profundo. ¡Puedes con esto! 💪 Prueba inhalar por 4 segundos, mantén por 4, exhala por 6. Repite 5 veces cuando sientas ansiedad. Eres más fuerte de lo que crees.'
       };
       if (score >= 1) return {
         level: 'Moderado',

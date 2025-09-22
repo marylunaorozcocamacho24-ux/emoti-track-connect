@@ -38,7 +38,7 @@ const PatientDashboard = () => {
             Hola, {userName} 👋
           </h1>
           <p className="text-accent-foreground/80 mt-1">
-            ¿Cómo te sientes hoy?
+            Hoy es un buen día para escucharte 💙
           </p>
         </div>
       </div>
@@ -85,9 +85,9 @@ const PatientDashboard = () => {
             
             <Button
               onClick={() => navigate('/evaluacion-diaria')}
-              className="pill-button w-full bg-lavender hover:bg-lavender/90 text-white"
+              className="pill-button w-full bg-lavender hover:bg-lavender/90 text-white rounded-2xl"
             >
-              <Brain className="w-4 h-4 mr-2" />
+              <span className="text-lg mr-2 animate-pulse">😊</span>
               Iniciar evaluación (1 min)
             </Button>
           </div>

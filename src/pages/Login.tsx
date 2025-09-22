@@ -24,18 +24,22 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <div className="grid-mobile space-y-8">
-        {/* Logo and branding */}
+        {/* Emotional faces and branding */}
         <div className="text-center space-y-4">
-          <div className="w-32 h-32 mx-auto mb-6">
-            <img 
-              src={logo} 
-              alt="EmotiTrack Logo" 
-              className="w-full h-full object-contain rounded-2xl shadow-lg"
-            />
+          <div className="flex justify-center space-x-6 mb-6">
+            <div className="w-16 h-16 bg-emotion-happy rounded-full flex items-center justify-center text-2xl">
+              😊
+            </div>
+            <div className="w-16 h-16 bg-emotion-sad rounded-full flex items-center justify-center text-2xl">
+              😟
+            </div>
+            <div className="w-16 h-16 bg-emotion-calm rounded-full flex items-center justify-center text-2xl">
+              😌
+            </div>
           </div>
           <h1 className="text-3xl font-bold text-primary mb-2">EmotiTrack</h1>
-          <p className="text-muted text-center max-w-sm mx-auto leading-relaxed">
-            Bienvenido a EmotiTrack: tu herramienta científica para comprender y acompañar el estado emocional.
+          <p className="text-foreground text-center max-w-sm mx-auto leading-relaxed">
+            Hola 👋 Bienvenido a EmotiTrack, un espacio para entender y acompañar tus emociones.
           </p>
         </div>
 
@@ -49,19 +53,19 @@ const Login = () => {
           <div className="space-y-4">
             <Button
               onClick={() => handleLogin('patient')}
-              className="pill-button w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md hover:shadow-lg"
+              className="pill-button w-full bg-sky-blue hover:bg-sky-blue/90 text-white shadow-md hover:shadow-lg rounded-2xl"
               size="lg"
             >
-              <Brain className="w-5 h-5 mr-3" />
+              <span className="text-lg mr-3">👤</span>
               Ingresar como paciente
             </Button>
             
             <Button
               onClick={() => handleLogin('psychologist')}
-              className="pill-button w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg"
+              className="pill-button w-full bg-soft-pink hover:bg-soft-pink/90 text-white shadow-md hover:shadow-lg rounded-2xl"
               size="lg"
             >
-              <Brain className="w-5 h-5 mr-3" />
+              <span className="text-lg mr-3">🧑‍⚕️</span>
               Ingresar como psicólogo
             </Button>
           </div>
