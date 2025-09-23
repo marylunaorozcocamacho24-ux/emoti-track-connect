@@ -17,14 +17,14 @@ export const Navigation = ({ userType = 'patient' }: NavigationProps) => {
             label="Inicio" 
           />
           <NavItem 
-            to={userType === 'patient' ? "/evaluacion-diaria" : "/pacientes"} 
+            to={userType === 'patient' ? "/evaluacion-diaria" : "/alertas"} 
             icon={PenTool} 
-            label={userType === 'patient' ? "Evaluación" : "Pacientes"} 
+            label={userType === 'patient' ? "Evaluación" : "Alertas"} 
           />
           <NavItem 
-            to={userType === 'patient' ? "/historial" : "/estadisticas"} 
+            to={userType === 'patient' ? "/historial" : "/psicologo"} 
             icon={BarChart3} 
-            label={userType === 'patient' ? "Historial" : "Estadísticas"} 
+            label={userType === 'patient' ? "Historial" : "Pacientes"} 
           />
           <NavItem 
             to="/perfil" 

@@ -14,7 +14,193 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alertas: {
+        Row: {
+          estado: string | null
+          fecha: string | null
+          id: string
+          paciente_id: string | null
+          tipo_alerta: string
+        }
+        Insert: {
+          estado?: string | null
+          fecha?: string | null
+          id?: string
+          paciente_id?: string | null
+          tipo_alerta: string
+        }
+        Update: {
+          estado?: string | null
+          fecha?: string | null
+          id?: string
+          paciente_id?: string | null
+          tipo_alerta?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluaciones: {
+        Row: {
+          fecha: string | null
+          id: string
+          observacion: string | null
+          paciente_id: string | null
+          resultado_numerico: number
+          tipo_prueba: string
+        }
+        Insert: {
+          fecha?: string | null
+          id?: string
+          observacion?: string | null
+          paciente_id?: string | null
+          resultado_numerico: number
+          tipo_prueba: string
+        }
+        Update: {
+          fecha?: string | null
+          id?: string
+          observacion?: string | null
+          paciente_id?: string | null
+          resultado_numerico?: number
+          tipo_prueba?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluaciones_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas: {
+        Row: {
+          contenido: string
+          fecha: string | null
+          id: string
+          paciente_id: string | null
+          psicologo_id: string | null
+        }
+        Insert: {
+          contenido: string
+          fecha?: string | null
+          id?: string
+          paciente_id?: string | null
+          psicologo_id?: string | null
+        }
+        Update: {
+          contenido?: string
+          fecha?: string | null
+          id?: string
+          paciente_id?: string | null
+          psicologo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_psicologo_id_fkey"
+            columns: ["psicologo_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sugerencias: {
+        Row: {
+          fecha: string | null
+          id: string
+          mensaje: string
+          paciente_id: string | null
+          psicologo_id: string | null
+        }
+        Insert: {
+          fecha?: string | null
+          id?: string
+          mensaje: string
+          paciente_id?: string | null
+          psicologo_id?: string | null
+        }
+        Update: {
+          fecha?: string | null
+          id?: string
+          mensaje?: string
+          paciente_id?: string | null
+          psicologo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sugerencias_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sugerencias_psicologo_id_fkey"
+            columns: ["psicologo_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          codigo_psicologo: string | null
+          created_at: string | null
+          edad: number | null
+          email: string
+          especialidad: string | null
+          genero: string | null
+          id: string
+          institucion: string | null
+          nombre: string
+          numero_licencia: string | null
+          rol: string
+        }
+        Insert: {
+          codigo_psicologo?: string | null
+          created_at?: string | null
+          edad?: number | null
+          email: string
+          especialidad?: string | null
+          genero?: string | null
+          id?: string
+          institucion?: string | null
+          nombre: string
+          numero_licencia?: string | null
+          rol: string
+        }
+        Update: {
+          codigo_psicologo?: string | null
+          created_at?: string | null
+          edad?: number | null
+          email?: string
+          especialidad?: string | null
+          genero?: string | null
+          id?: string
+          institucion?: string | null
+          nombre?: string
+          numero_licencia?: string | null
+          rol?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

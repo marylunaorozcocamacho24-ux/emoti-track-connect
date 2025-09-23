@@ -12,6 +12,8 @@ import DailyEvaluation from "./pages/DailyEvaluation";
 import EvaluationResults from "./pages/EvaluationResults";
 import PatientHistory from "./pages/PatientHistory";
 import PatientProfile from "./pages/PatientProfile";
+import PatientProfileDetail from "./pages/PatientProfileDetail";
+import AlertsView from "./pages/AlertsView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +34,8 @@ const App = () => (
           <Route path="/resultados" element={<EvaluationResults />} />
           <Route path="/historial" element={<PatientHistory />} />
           <Route path="/perfil" element={<PatientProfile />} />
+          <Route path="/paciente-detalle/:patientId" element={<PatientProfileDetail />} />
+          <Route path="/alertas" element={<AlertsView />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
