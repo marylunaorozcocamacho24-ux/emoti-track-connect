@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, PenTool, BarChart3, User } from "lucide-react";
+import { Home, PenTool, BarChart3, User, Users, Bell, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -11,26 +11,20 @@ export const Navigation = ({ userType = 'patient' }: NavigationProps) => {
     <nav className="fixed bottom-0 left-0 right-0 bg-primary border-t border-border/20 shadow-2xl">
       <div className="max-w-md mx-auto px-4">
         <div className="flex justify-around items-center py-2">
-          <NavItem 
-            to={userType === 'patient' ? "/paciente" : "/psicologo"} 
-            icon={Home} 
-            label="Inicio" 
-          />
-          <NavItem 
-            to={userType === 'patient' ? "/evaluacion-diaria" : "/alertas"} 
-            icon={PenTool} 
-            label={userType === 'patient' ? "Evaluación" : "Alertas"} 
-          />
-          <NavItem 
-            to={userType === 'patient' ? "/historial" : "/psicologo"} 
-            icon={BarChart3} 
-            label={userType === 'patient' ? "Historial" : "Pacientes"} 
-          />
-          <NavItem 
-            to="/perfil" 
-            icon={User} 
-            label="Perfil" 
-          />
+          {userType === 'patient' ? (
+            <>
+              <NavItem to="/paciente" icon={Home} label="Inicio" />
+              <NavItem to="/evaluacion-diaria" icon={PenTool} label="Evaluación" />
+              <NavItem to="/historial" icon={BarChart3} label="Historial" />
+              <NavItem to="/perfil" icon={User} label="Perfil" />
+            </>
+          ) : (
+            <>
+              <NavItem to="/psicologo" icon={Users} label="Pacientes" />
+              <NavItem to="/alertas" icon={Bell} label="Alertas" />
+              <NavItem to="/configuracion-psicologo" icon={Settings} label="Configuración" />
+            </>
+          )}
         </div>
       </div>
     </nav>

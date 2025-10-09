@@ -243,6 +243,12 @@ const PatientProfileDetail = () => {
             variant="ghost"
             size="sm"
             className="text-primary-foreground hover:bg-primary-foreground/10"
+            onClick={() => {
+              toast({
+                title: "Descargando PDF",
+                description: "El reporte se descargará en breve"
+              });
+            }}
           >
             <Download className="w-4 h-4" />
           </Button>
