@@ -9,50 +9,55 @@ All colors MUST be HSL and follow the specified palette.
 @layer base {
   :root {
     /* Base neutral background */
-    --background: 44 53% 97%; /* #fff8eb */
-    --foreground: 236 29% 24%; /* #3c3970 */
+    --background: 44 53% 97%; /* #fff8eb - Warm cream */
+    --foreground: 236 29% 24%; /* #3c3970 - Deep purple */
 
     /* Card and surface colors */
-    --card: 44 53% 97%; /* #fff8eb */
+    --card: 0 0% 100%; /* White cards for clarity */
     --card-foreground: 236 29% 24%; /* #3c3970 */
 
     /* Interactive surfaces */
-    --popover: 44 53% 97%; /* #fff8eb */
-    --popover-foreground: 236 29% 24%; /* #3c3970 */
+    --popover: 0 0% 100%;
+    --popover-foreground: 236 29% 24%;
 
-    /* Primary brand colors - Deep elegant blue */
+    /* Primary brand colors - Deep elegant purple */
     --primary: 236 29% 24%; /* #3c3970 */
-    --primary-foreground: 44 53% 97%; /* #fff8eb */
+    --primary-foreground: 0 0% 100%;
 
     /* Secondary - Turquoise for patient actions */
     --secondary: 187 43% 54%; /* #51acb8 */
-    --secondary-foreground: 44 53% 97%; /* #fff8eb */
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Success - Lavender for positive actions */
+    --success: 240 46% 62%; /* #7080ca */
+    --success-foreground: 0 0% 100%;
 
     /* Muted elements */
     --muted: 208 24% 58%; /* #7094b4 */
-    --muted-foreground: 236 29% 24%; /* #3c3970 */
+    --muted-foreground: 236 29% 24%;
 
     /* Accent - Light blue for highlights */
     --accent: 208 75% 74%; /* #90bde9 */
-    --accent-foreground: 236 29% 24%; /* #3c3970 */
+    --accent-foreground: 236 29% 24%;
 
-    /* Emotion colors */
-    --emotion-happy: 0 67% 75%; /* #fc8080 */
-    --emotion-sad: 208 24% 58%; /* #7094b4 */
-    --emotion-anxious: 0 55% 55%; /* #ca5050 */
-    --emotion-calm: 187 43% 54%; /* #51acb8 */
+    /* Emotion colors for mood tracking */
+    --emotion-happy: 178 100% 25%; /* #007f7a - Teal (positive) */
+    --emotion-sad: 208 24% 58%; /* #7094b4 - Blue (sad) */
+    --emotion-anxious: 0 55% 55%; /* #ca5050 - Red (high alert) */
+    --emotion-calm: 187 43% 54%; /* #51acb8 - Turquoise (calm) */
 
     /* Additional brand colors */
     --lavender: 240 46% 62%; /* #7080ca */
     --soft-pink: 298 53% 74%; /* #d99dde */
+    --coral: 0 67% 75%; /* #fc8080 */
     --teal-dark: 178 100% 25%; /* #007f7a */
 
     /* UI elements */
     --destructive: 0 55% 55%; /* #ca5050 */
-    --destructive-foreground: 44 53% 97%; /* #fff8eb */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 298 53% 74%; /* #d99dde */
-    --input: 298 53% 74%; /* #d99dde */
+    --border: 298 20% 88%; /* Softer pink border */
+    --input: 208 24% 90%; /* Light blue for inputs */
     --ring: 236 29% 24%; /* #3c3970 */
 
     --radius: 1rem;

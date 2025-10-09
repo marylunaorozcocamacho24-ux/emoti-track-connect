@@ -27,6 +27,10 @@ export default {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         emotion: {
           happy: "hsl(var(--emotion-happy))",
           sad: "hsl(var(--emotion-sad))",
@@ -35,6 +39,7 @@ export default {
         },
         lavender: "hsl(var(--lavender))",
         "soft-pink": "hsl(var(--soft-pink))",
+        coral: "hsl(var(--coral))",
         "teal-dark": "hsl(var(--teal-dark))",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
