@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Brain } from "lucide-react";
-import logo from "@/assets/logo.jpg";
+import logo from "@/assets/emotitrack-logo.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,7 +10,6 @@ const Login = () => {
 
   const handleLogin = (userType: 'patient' | 'psychologist') => {
     setSelectedType(userType);
-    // Store user type in localStorage for the navigation component
     localStorage.setItem('userType', userType);
     
     if (userType === 'patient') {
@@ -21,60 +19,85 @@ const Login = () => {
     }
   };
 
+  // Floating emoji animation
+  const emojis = ['😊', '😟', '😌', '😠', '😲'];
+  
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="grid-mobile space-y-8">
-        {/* Emotional faces and branding */}
-        <div className="text-center space-y-4">
-          <div className="flex justify-center space-x-6 mb-6">
-            <div className="w-16 h-16 bg-emotion-happy rounded-full flex items-center justify-center text-2xl">
-              😊
-            </div>
-            <div className="w-16 h-16 bg-emotion-sad rounded-full flex items-center justify-center text-2xl">
-              😟
-            </div>
-            <div className="w-16 h-16 bg-emotion-calm rounded-full flex items-center justify-center text-2xl">
-              😌
+    <div className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center justify-center p-4">
+      {/* Floating emoji background pattern */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-4xl opacity-10 animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${8 + Math.random() * 4}s`,
+            }}
+          >
+            {emojis[i % emojis.length]}
+          </div>
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full max-w-md space-y-8 animate-fade-in">
+        {/* Logo and branding */}
+        <div className="text-center space-y-6">
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <img 
+                src={logo} 
+                alt="EmotiTrack Logo" 
+                className="w-32 h-32 object-contain animate-scale-in"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl -z-10 animate-pulse" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-primary mb-2">EmotiTrack</h1>
-          <p className="text-foreground text-center max-w-sm mx-auto leading-relaxed">
-            Hola 👋 Bienvenido a EmotiTrack, un espacio para entender y acompañar tus emociones.
-          </p>
+          
+          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              ¡Bienvenido a EmotiTrack!
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Tu bienestar emocional comienza con un clic.
+            </p>
+          </div>
         </div>
 
         {/* Login options */}
-        <Card className="card-soft space-y-6">
-          <div className="text-center">
-            <h2 className="text-xl font-semibold text-primary mb-2">Selecciona tu perfil</h2>
-            <p className="text-muted text-sm">¿Cómo quieres acceder hoy?</p>
+        <Card className="p-8 backdrop-blur-sm bg-card/80 border-2 border-primary/20 shadow-2xl animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-primary mb-2">Selecciona tu perfil</h2>
+            <p className="text-muted-foreground text-sm">¿Cómo quieres acceder hoy?</p>
           </div>
           
           <div className="space-y-4">
             <Button
               onClick={() => handleLogin('patient')}
-              className="pill-button w-full bg-sky-blue hover:bg-sky-blue/90 text-primary shadow-lg hover:shadow-xl rounded-3xl border border-primary/10"
+              className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-secondary hover:bg-secondary/90"
               size="lg"
             >
-              <span className="text-lg mr-3">🙂</span>
-              Ingresar como paciente
+              <span className="text-2xl mr-3">🙂</span>
+              Entrar como Paciente
             </Button>
             
             <Button
               onClick={() => handleLogin('psychologist')}
-              className="pill-button w-full bg-soft-pink hover:bg-soft-pink/90 text-white shadow-md hover:shadow-lg rounded-2xl"
+              className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-success hover:bg-success/90"
               size="lg"
             >
-              <span className="text-lg mr-3">🧑‍⚕️</span>
-              Ingresar como psicólogo
+              <span className="text-2xl mr-3">🧑‍⚕️</span>
+              Entrar como Psicólogo
             </Button>
           </div>
         </Card>
 
         {/* Motivational message */}
-        <div className="text-center">
-          <p className="text-muted text-sm">
-            "Cada paso hacia el autoconocimiento es un paso hacia el bienestar"
+        <div className="text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <p className="text-muted-foreground text-sm italic">
+            "Tu bienestar emocional es importante para nosotros"
           </p>
         </div>
       </div>
