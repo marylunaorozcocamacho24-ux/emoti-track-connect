@@ -27,20 +27,19 @@ export default {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
+        "button-primary": {
+          DEFAULT: "hsl(var(--button-primary))",
+          foreground: "hsl(var(--button-primary-foreground))",
         },
         emotion: {
           happy: "hsl(var(--emotion-happy))",
+          neutral: "hsl(var(--emotion-neutral))",
           sad: "hsl(var(--emotion-sad))",
           anxious: "hsl(var(--emotion-anxious))",
-          calm: "hsl(var(--emotion-calm))",
         },
-        lavender: "hsl(var(--lavender))",
-        "soft-pink": "hsl(var(--soft-pink))",
+        "pink-pastel": "hsl(var(--pink-pastel))",
         coral: "hsl(var(--coral))",
-        "teal-dark": "hsl(var(--teal-dark))",
+        "coral-dark": "hsl(var(--coral-dark))",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",

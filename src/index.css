@@ -8,75 +8,68 @@ All colors MUST be HSL and follow the specified palette.
 
 @layer base {
   :root {
-    /* Base neutral background */
-    --background: 44 53% 97%; /* #fff8eb - Warm cream */
-    --foreground: 236 29% 24%; /* #3c3970 - Deep purple */
+    /* Base neutral background - Warm beige */
+    --background: 44 53% 97%; /* #fff8eb */
+    --foreground: 236 29% 24%; /* #3c3970 - Deep purple for text */
 
     /* Card and surface colors */
-    --card: 0 0% 100%; /* White cards for clarity */
+    --card: 0 0% 100%; /* White cards */
     --card-foreground: 236 29% 24%; /* #3c3970 */
 
     /* Interactive surfaces */
     --popover: 0 0% 100%;
     --popover-foreground: 236 29% 24%;
 
-    /* Primary brand colors - Deep elegant purple */
+    /* Primary - Deep purple for headers and titles */
     --primary: 236 29% 24%; /* #3c3970 */
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Turquoise for patient actions */
+    /* Secondary - Turquoise for patient interface */
     --secondary: 187 43% 54%; /* #51acb8 */
     --secondary-foreground: 0 0% 100%;
     
-    /* Success - Lavender for positive actions */
-    --success: 240 46% 62%; /* #7080ca */
-    --success-foreground: 0 0% 100%;
+    /* Blue medium for main buttons */
+    --button-primary: 208 24% 58%; /* #7094b4 */
+    --button-primary-foreground: 0 0% 100%;
 
-    /* Muted elements */
-    --muted: 208 24% 58%; /* #7094b4 */
+    /* Muted - Light blue for secondary backgrounds */
+    --muted: 208 75% 74%; /* #90bde9 */
     --muted-foreground: 236 29% 24%;
 
-    /* Accent - Light blue for highlights */
-    --accent: 208 75% 74%; /* #90bde9 */
-    --accent-foreground: 236 29% 24%;
+    /* Accent - Lavender blue for icons and borders */
+    --accent: 240 46% 62%; /* #7080ca */
+    --accent-foreground: 0 0% 100%;
 
-    /* Emotion colors for mood tracking */
-    --emotion-happy: 178 100% 25%; /* #007f7a - Teal (positive) */
-    --emotion-sad: 208 24% 58%; /* #7094b4 - Blue (sad) */
-    --emotion-anxious: 0 55% 55%; /* #ca5050 - Red (high alert) */
-    --emotion-calm: 187 43% 54%; /* #51acb8 - Turquoise (calm) */
+    /* Emotion/status colors */
+    --emotion-happy: 178 100% 25%; /* #007f7a - Positive indicators */
+    --emotion-neutral: 187 43% 54%; /* #51acb8 - Calm/neutral */
+    --emotion-sad: 208 24% 58%; /* #7094b4 - Blue */
+    --emotion-anxious: 0 55% 55%; /* #ca5050 - Red warnings */
 
     /* Additional brand colors */
-    --lavender: 240 46% 62%; /* #7080ca */
-    --soft-pink: 298 53% 74%; /* #d99dde */
-    --coral: 0 67% 75%; /* #fc8080 */
-    --teal-dark: 178 100% 25%; /* #007f7a */
+    --pink-pastel: 298 53% 74%; /* #d99dde - Empathetic sections */
+    --coral: 0 67% 75%; /* #fc8080 - Action buttons/alerts */
+    --coral-dark: 0 55% 55%; /* #ca5050 - Destructive actions */
 
     /* UI elements */
     --destructive: 0 55% 55%; /* #ca5050 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 298 20% 88%; /* Softer pink border */
-    --input: 208 24% 90%; /* Light blue for inputs */
-    --ring: 236 29% 24%; /* #3c3970 */
+    --border: 240 46% 90%; /* Soft lavender border */
+    --input: 208 75% 95%; /* Very light blue for inputs */
+    --ring: 240 46% 62%; /* #7080ca */
 
     --radius: 1rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Sidebar specific */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 236 29% 24%;
+    --sidebar-primary: 236 29% 24%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 208 75% 74%;
+    --sidebar-accent-foreground: 236 29% 24%;
+    --sidebar-border: 240 46% 90%;
+    --sidebar-ring: 240 46% 62%;
   }
 
   /* Dark mode not prioritized for mental health app - keeping light, warm theme */

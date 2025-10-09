@@ -56,48 +56,44 @@ const Login = () => {
             </div>
           </div>
           
-          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              ¡Bienvenido a EmotiTrack!
+          <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-4xl font-bold text-primary leading-tight">
+              🌼 Bienvenido/a a EmotiTrack
             </h1>
-            <p className="text-lg text-muted-foreground">
-              Tu bienestar emocional comienza con un clic.
+            <p className="text-lg text-foreground/80">
+              Tu espacio para comprender y acompañar emociones.
             </p>
           </div>
         </div>
 
         {/* Login options */}
-        <Card className="p-8 backdrop-blur-sm bg-card/80 border-2 border-primary/20 shadow-2xl animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-primary mb-2">Selecciona tu perfil</h2>
-            <p className="text-muted-foreground text-sm">¿Cómo quieres acceder hoy?</p>
-          </div>
-          
+        <Card className="p-8 backdrop-blur-sm bg-card/95 border border-border shadow-2xl animate-fade-in rounded-3xl" style={{ animationDelay: '0.4s' }}>
           <div className="space-y-4">
             <Button
-              onClick={() => handleLogin('patient')}
-              className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-secondary hover:bg-secondary/90"
+              onClick={() => handleLogin('psychologist')}
+              variant="button-primary"
+              className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               size="lg"
             >
-              <span className="text-2xl mr-3">🙂</span>
-              Entrar como Paciente
+              <span className="text-2xl mr-3">👩‍⚕️</span>
+              Ingresar como Psicólogo
             </Button>
             
             <Button
-              onClick={() => handleLogin('psychologist')}
-              className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-success hover:bg-success/90"
+              onClick={() => handleLogin('patient')}
+              className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-secondary hover:bg-secondary/90 text-white"
               size="lg"
             >
-              <span className="text-2xl mr-3">🧑‍⚕️</span>
-              Entrar como Psicólogo
+              <span className="text-2xl mr-3">🧠</span>
+              Ingresar como Paciente
             </Button>
           </div>
         </Card>
 
-        {/* Motivational message */}
+        {/* Footer text */}
         <div className="text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <p className="text-muted-foreground text-sm italic">
-            "Tu bienestar emocional es importante para nosotros"
+          <p className="text-foreground/50 text-xs">
+            Versión Beta · Desarrollado con IA para la innovación en salud mental.
           </p>
         </div>
       </div>
