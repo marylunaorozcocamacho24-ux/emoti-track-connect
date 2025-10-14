@@ -41,6 +41,13 @@ export type Database = {
             foreignKeyName: "alertas_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
+            referencedRelation: "psychologist_patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -72,6 +79,13 @@ export type Database = {
           tipo_prueba?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "evaluaciones_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "psychologist_patients"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "evaluaciones_paciente_id_fkey"
             columns: ["paciente_id"]
@@ -108,7 +122,21 @@ export type Database = {
             foreignKeyName: "notas_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
+            referencedRelation: "psychologist_patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_psicologo_id_fkey"
+            columns: ["psicologo_id"]
+            isOneToOne: false
+            referencedRelation: "psychologist_patients"
             referencedColumns: ["id"]
           },
           {
@@ -147,7 +175,21 @@ export type Database = {
             foreignKeyName: "sugerencias_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
+            referencedRelation: "psychologist_patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sugerencias_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sugerencias_psicologo_id_fkey"
+            columns: ["psicologo_id"]
+            isOneToOne: false
+            referencedRelation: "psychologist_patients"
             referencedColumns: ["id"]
           },
           {
@@ -224,14 +266,49 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      psychologist_patients: {
+        Row: {
+          codigo_psicologo: string | null
+          edad: number | null
+          genero: string | null
+          id: string | null
+          nombre: string | null
+        }
+        Insert: {
+          codigo_psicologo?: string | null
+          edad?: number | null
+          genero?: string | null
+          id?: string | null
+          nombre?: string | null
+        }
+        Update: {
+          codigo_psicologo?: string | null
+          edad?: number | null
+          genero?: string | null
+          id?: string | null
+          nombre?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      get_user_psychologist_code: {
+        Args: { _user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_psychologist: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
+      psychologist_has_patient: {
+        Args: { _patient_id: string; _psychologist_id: string }
         Returns: boolean
       }
     }
