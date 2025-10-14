@@ -7,6 +7,22 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, UserPlus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { z } from "zod";
+
+// Input validation schema
+const patientSchema = z.object({
+  name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
+  age: z.string().refine((val) => {
+    const age = parseInt(val);
+    return age >= 13 && age <= 120;
+  }, "La edad debe estar entre 13 y 120 años"),
+  email: z.string().trim().email("Email inválido").max(255, "Email muy largo"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  accessCode: z.string().trim().min(1, "El código de acceso es requerido").max(50, "Código muy largo"),
+  personalNotes: z.string().max(5000, "Las notas son muy largas").optional()
+});
 
 const PatientRegistration = () => {
   const navigate = useNavigate();
@@ -14,15 +30,76 @@ const PatientRegistration = () => {
     name: '',
     age: '',
     email: '',
+    password: '',
     accessCode: '',
     personalNotes: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save patient data (would connect to backend)
-    console.log('Patient registration:', formData);
-    navigate('/paciente');
+    setLoading(true);
+    setErrors({});
+
+    try {
+      // Validate input
+      const validatedData = patientSchema.parse(formData);
+
+      // Sign up with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: validatedData.email,
+        password: validatedData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            nombre: validatedData.name,
+            rol: 'paciente'
+          }
+        }
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("No se pudo crear el usuario");
+
+      // Update additional profile data
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          edad: parseInt(validatedData.age),
+          codigo_psicologo: validatedData.accessCode
+        })
+        .eq('id', authData.user.id);
+
+      if (updateError) throw updateError;
+
+      // Create initial note if provided
+      if (validatedData.personalNotes) {
+        await supabase.from('notas').insert({
+          paciente_id: authData.user.id,
+          contenido: validatedData.personalNotes
+        });
+      }
+
+      toast.success("¡Registro exitoso! Redirigiendo...");
+      setTimeout(() => navigate('/paciente'), 1500);
+      
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+        toast.error("Por favor corrige los errores en el formulario");
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -84,7 +161,7 @@ const PatientRegistration = () => {
               </div>
 
               <div>
-                <Label htmlFor="email" className="text-primary font-medium">Correo electrónico (opcional)</Label>
+                <Label htmlFor="email" className="text-primary font-medium">Correo electrónico *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -92,7 +169,23 @@ const PatientRegistration = () => {
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
                   placeholder="tucorreo@ejemplo.com"
+                  required
                 />
+                {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="password" className="text-primary font-medium">Contraseña *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                />
+                {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
               </div>
 
               <div>
@@ -124,9 +217,9 @@ const PatientRegistration = () => {
               type="submit"
               className="pill-button w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md"
               size="lg"
-              disabled={!formData.name || !formData.age || !formData.accessCode}
+              disabled={loading || !formData.name || !formData.age || !formData.email || !formData.password || !formData.accessCode}
             >
-              Crear mi perfil
+              {loading ? "Creando cuenta..." : "Crear mi perfil"}
             </Button>
           </form>
         </Card>

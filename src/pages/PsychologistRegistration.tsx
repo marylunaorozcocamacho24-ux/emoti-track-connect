@@ -6,22 +6,95 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Stethoscope } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { z } from "zod";
+
+// Input validation schema
+const psychologistSchema = z.object({
+  name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
+  email: z.string().trim().email("Email inválido").max(255, "Email muy largo"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  specialty: z.string().min(1, "La especialidad es requerida"),
+  licenseNumber: z.string().trim().min(1, "El número de cédula es requerido").max(50, "Número muy largo"),
+  institution: z.string().max(200, "Nombre de institución muy largo").optional(),
+  experience: z.string().min(1, "Los años de experiencia son requeridos")
+});
 
 const PsychologistRegistration = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
+    email: '',
+    password: '',
     specialty: '',
     licenseNumber: '',
     institution: '',
     experience: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save psychologist data (would connect to backend)
-    console.log('Psychologist registration:', formData);
-    navigate('/psicologo');
+    setLoading(true);
+    setErrors({});
+
+    try {
+      // Validate input
+      const validatedData = psychologistSchema.parse(formData);
+
+      // Generate unique psychologist code
+      const psychologistCode = `PSI-${Date.now().toString(36).toUpperCase()}`;
+
+      // Sign up with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: validatedData.email,
+        password: validatedData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            nombre: validatedData.name,
+            rol: 'psicologo'
+          }
+        }
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("No se pudo crear el usuario");
+
+      // Update additional profile data
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          especialidad: validatedData.specialty,
+          numero_licencia: validatedData.licenseNumber,
+          institucion: validatedData.institution || null,
+          codigo_psicologo: psychologistCode
+        })
+        .eq('id', authData.user.id);
+
+      if (updateError) throw updateError;
+
+      toast.success("¡Registro exitoso! Redirigiendo...");
+      setTimeout(() => navigate('/psicologo'), 1500);
+      
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+        toast.error("Por favor corrige los errores en el formulario");
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -78,6 +151,34 @@ const PsychologistRegistration = () => {
                   placeholder="Dr./Dra. Nombre Apellido"
                   required
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="email" className="text-primary font-medium">Correo electrónico *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
+                  placeholder="tuemail@ejemplo.com"
+                  required
+                />
+                {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="password" className="text-primary font-medium">Contraseña *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                />
+                {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
               </div>
 
               <div>
@@ -138,9 +239,9 @@ const PsychologistRegistration = () => {
               type="submit"
               className="pill-button w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md"
               size="lg"
-              disabled={!formData.name || !formData.specialty || !formData.licenseNumber || !formData.experience}
+              disabled={loading || !formData.name || !formData.email || !formData.password || !formData.specialty || !formData.licenseNumber || !formData.experience}
             >
-              Crear perfil profesional
+              {loading ? "Creando cuenta..." : "Crear perfil profesional"}
             </Button>
           </form>
         </Card>

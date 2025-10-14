@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
 import PatientDashboard from "./pages/PatientDashboard";
 import PsychologistDashboard from "./pages/PsychologistDashboard";
@@ -28,18 +29,23 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/paciente" element={<PatientDashboard />} />
-          <Route path="/psicologo" element={<PsychologistDashboardNew />} />
-          <Route path="/psicologo-old" element={<PsychologistDashboard />} />
           <Route path="/registro-paciente" element={<PatientRegistration />} />
           <Route path="/registro-psicologo" element={<PsychologistRegistration />} />
-          <Route path="/evaluacion-diaria" element={<DailyEvaluation />} />
-          <Route path="/resultados" element={<EvaluationResults />} />
-          <Route path="/historial" element={<PatientHistory />} />
-          <Route path="/perfil" element={<PatientProfile />} />
-          <Route path="/paciente/:patientId" element={<PatientProfileDetail />} />
-          <Route path="/alertas" element={<AlertsView />} />
-          <Route path="/configuracion-psicologo" element={<PsychologistSettings />} />
+          
+          {/* Protected Patient Routes */}
+          <Route path="/paciente" element={<ProtectedRoute requiredRole="paciente"><PatientDashboard /></ProtectedRoute>} />
+          <Route path="/evaluacion-diaria" element={<ProtectedRoute requiredRole="paciente"><DailyEvaluation /></ProtectedRoute>} />
+          <Route path="/resultados" element={<ProtectedRoute requiredRole="paciente"><EvaluationResults /></ProtectedRoute>} />
+          <Route path="/historial" element={<ProtectedRoute requiredRole="paciente"><PatientHistory /></ProtectedRoute>} />
+          <Route path="/perfil" element={<ProtectedRoute requiredRole="paciente"><PatientProfile /></ProtectedRoute>} />
+          
+          {/* Protected Psychologist Routes */}
+          <Route path="/psicologo" element={<ProtectedRoute requiredRole="psicologo"><PsychologistDashboardNew /></ProtectedRoute>} />
+          <Route path="/psicologo-old" element={<ProtectedRoute requiredRole="psicologo"><PsychologistDashboard /></ProtectedRoute>} />
+          <Route path="/paciente/:patientId" element={<ProtectedRoute requiredRole="psicologo"><PatientProfileDetail /></ProtectedRoute>} />
+          <Route path="/alertas" element={<ProtectedRoute requiredRole="psicologo"><AlertsView /></ProtectedRoute>} />
+          <Route path="/configuracion-psicologo" element={<ProtectedRoute requiredRole="psicologo"><PsychologistSettings /></ProtectedRoute>} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
