@@ -31,7 +31,6 @@ const PatientProfile = () => {
 
   const handleSave = () => {
     // Save profile changes (would connect to backend)
-    console.log('Saving profile:', profile);
     setIsEditing(false);
   };
 
