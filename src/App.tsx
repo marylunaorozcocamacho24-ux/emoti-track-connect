@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
 import PatientDashboard from "./pages/PatientDashboard";
+import PatientDashboardNew from "./pages/PatientDashboardNew";
 import PsychologistDashboard from "./pages/PsychologistDashboard";
 import PsychologistDashboardNew from "./pages/PsychologistDashboardNew";
 import PatientRegistration from "./pages/PatientRegistration";
@@ -33,7 +34,7 @@ const App = () => (
           <Route path="/registro-psicologo" element={<PsychologistRegistration />} />
           
           {/* Protected Patient Routes */}
-          <Route path="/paciente" element={<ProtectedRoute requiredRole="paciente"><PatientDashboard /></ProtectedRoute>} />
+          <Route path="/paciente" element={<ProtectedRoute requiredRole="paciente"><PatientDashboardNew /></ProtectedRoute>} />
           <Route path="/evaluacion-diaria" element={<ProtectedRoute requiredRole="paciente"><DailyEvaluation /></ProtectedRoute>} />
           <Route path="/resultados" element={<ProtectedRoute requiredRole="paciente"><EvaluationResults /></ProtectedRoute>} />
           <Route path="/historial" element={<ProtectedRoute requiredRole="paciente"><PatientHistory /></ProtectedRoute>} />

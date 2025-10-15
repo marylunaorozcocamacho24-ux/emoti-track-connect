@@ -70,6 +70,12 @@ All colors MUST be HSL and follow the specified palette.
     --sidebar-accent-foreground: 236 29% 24%;
     --sidebar-border: 240 46% 90%;
     --sidebar-ring: 240 46% 62%;
+    
+    /* Emotional background colors */
+    --emotion-bg-calm: 208 75% 94%; /* Very light blue */
+    --emotion-bg-sad: 298 53% 94%; /* Very light lavender */
+    --emotion-bg-stress: 0 67% 95%; /* Very light coral */
+    --emotion-bg-balanced: 187 43% 94%; /* Very light turquoise */
   }
 
   /* Dark mode not prioritized for mental health app - keeping light, warm theme */
@@ -95,23 +101,63 @@ All colors MUST be HSL and follow the specified palette.
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Nunito', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-image: 
+      radial-gradient(circle at 20% 30%, hsl(var(--emotion-happy) / 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, hsl(var(--pink-pastel) / 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, hsl(var(--muted) / 0.05) 0%, transparent 50%);
   }
   
   /* Custom utility classes for EmotiTrack */
   .pill-button {
-    @apply rounded-full px-8 py-4 font-medium text-center transition-all duration-200 shadow-sm;
+    @apply rounded-full px-8 py-4 font-medium text-center transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105;
   }
   
   .emotion-icon {
-    @apply w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold shadow-md transition-transform duration-200 hover:scale-105;
+    @apply w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg;
   }
   
   .card-soft {
-    @apply bg-card rounded-2xl p-6 shadow-sm border border-border/50;
+    @apply bg-card rounded-2xl p-6 shadow-sm border border-border/50 transition-all duration-300 hover:shadow-md;
   }
   
   .grid-mobile {
     @apply grid grid-cols-1 gap-4 max-w-md mx-auto px-4;
+  }
+  
+  .chat-bubble {
+    @apply rounded-3xl px-6 py-4 shadow-sm transition-all duration-300 hover:shadow-md;
+  }
+  
+  .badge-shine {
+    @apply relative overflow-hidden;
+  }
+  
+  .badge-shine::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    animation: shine 3s ease-in-out infinite;
+  }
+  
+  @keyframes shine {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+  
+  /* Emotional background states */
+  .emotion-bg-calm {
+    background: linear-gradient(135deg, hsl(var(--emotion-bg-calm)) 0%, hsl(var(--background)) 100%);
+  }
+  
+  .emotion-bg-sad {
+    background: linear-gradient(135deg, hsl(var(--emotion-bg-sad)) 0%, hsl(var(--background)) 100%);
+  }
+  
+  .emotion-bg-stress {
+    background: linear-gradient(135deg, hsl(var(--emotion-bg-stress)) 0%, hsl(var(--background)) 100%);
+  }
+  
+  .emotion-bg-balanced {
+    background: linear-gradient(135deg, hsl(var(--emotion-bg-balanced)) 0%, hsl(var(--background)) 100%);
   }
 }
