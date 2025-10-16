@@ -25,7 +25,7 @@ const Login = () => {
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .single()
+          .maybeSingle()
           .then(({ data }) => {
             if (data?.role === 'paciente') {
               navigate('/paciente');
@@ -55,16 +55,16 @@ const Login = () => {
       if (error) throw error;
 
       // Verify user has correct role
-      const { data: roleData } = await supabase
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', data.user.id)
         .eq('role', userType)
-        .single();
+        .maybeSingle();
 
       if (!roleData) {
         await supabase.auth.signOut();
-        throw new Error("No tienes acceso con este tipo de usuario");
+        throw new Error("No tienes acceso con este tipo de usuario. Por favor verifica que te hayas registrado correctamente.");
       }
 
       toast.success("¡Inicio de sesión exitoso!");

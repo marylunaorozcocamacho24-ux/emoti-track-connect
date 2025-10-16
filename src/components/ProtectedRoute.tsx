@@ -38,7 +38,7 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
         .select('role')
         .eq('user_id', user.id)
         .eq('role', requiredRole)
-        .single()
+        .maybeSingle()
         .then(({ data, error }) => {
           setHasRole(!error && !!data);
           setLoading(false);
