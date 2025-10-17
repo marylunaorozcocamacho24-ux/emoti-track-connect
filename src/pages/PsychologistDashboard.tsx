@@ -3,11 +3,11 @@ import { Navigation } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Plus, TrendingUp, Calendar, MessageSquare, Search, AlertTriangle } from "lucide-react";
+import { Plus, Calendar, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import PatientsTable from "./PatientsTable";
 
 interface Patient {
   id: string;
@@ -54,7 +54,6 @@ const PsychologistDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [alertsCount, setAlertsCount] = useState(0);
   const [stats, setStats] = useState<DashboardStats>({
@@ -168,10 +167,6 @@ const PsychologistDashboard = () => {
     navigate(`/paciente-detalle/${patientId}`);
   };
 
-  const filteredPatients = patients.filter(patient =>
-    patient.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
@@ -196,16 +191,6 @@ const PsychologistDashboard = () => {
       </div>
 
       <div className="max-w-md mx-auto px-4 py-6 space-y-4">
-        {/* Search bar */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted w-4 h-4" />
-          <Input
-            placeholder="Buscar pacientes..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
 
         {/* Quick stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -269,90 +254,23 @@ const PsychologistDashboard = () => {
           </Card>
         )}
 
-        {/* Patients list */}
+        {/* Patients table */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-primary">
-              Pacientes ({filteredPatients.length})
+              Gestión de Pacientes
             </h2>
             <Button
-              onClick={() => navigate('/agregar-paciente')}
+              onClick={() => navigate('/registro-paciente')}
               className="pill-button bg-secondary hover:bg-secondary/90 text-secondary-foreground"
               size="sm"
             >
               <Plus className="w-4 h-4 mr-1" />
-              Agregar
+              Agregar Paciente
             </Button>
           </div>
           
-          {loading ? (
-            <Card className="card-soft text-center py-8">
-              <div className="text-muted">Cargando pacientes...</div>
-            </Card>
-          ) : filteredPatients.length === 0 ? (
-            <Card className="card-soft text-center py-8">
-              <div className="text-muted">
-                {searchTerm ? 'No se encontraron pacientes' : 'No hay pacientes registrados'}
-              </div>
-            </Card>
-          ) : (
-            filteredPatients.map((patient) => {
-              const emotion = patient.lastEvaluation 
-                ? getEmotionFromScore(patient.lastEvaluation.resultado_numerico, patient.lastEvaluation.tipo_prueba)
-                : { emoji: '🙂', color: 'bg-muted', level: 'sin_datos' };
-              
-              return (
-                <Card
-                  key={patient.id}
-                  className="card-soft cursor-pointer hover:shadow-md transition-shadow duration-200"
-                  onClick={() => handlePatientClick(patient.id)}
-                >
-                  <div className="flex items-start space-x-4">
-                    {/* Emotion indicator */}
-                    <div className="text-2xl mt-1 flex-shrink-0">
-                      {emotion.emoji}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <h3 className="font-semibold text-primary truncate">
-                            {patient.nombre}
-                          </h3>
-                          {patient.edad && (
-                            <p className="text-xs text-muted">{patient.edad} años</p>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge variant="outline" className="text-xs">
-                            {emotion.level}
-                          </Badge>
-                        </div>
-                      </div>
-                      
-                      <p className="text-sm text-muted mb-3 line-clamp-2">
-                        {patient.lastNote?.contenido || 'Sin notas recientes'}
-                      </p>
-                      
-                      <div className="flex items-center justify-between text-xs text-muted">
-                        <div className="flex items-center">
-                          <Calendar className="w-3 h-3 mr-1" />
-                          {patient.lastEvaluation?.fecha ? 
-                            new Date(patient.lastEvaluation.fecha).toLocaleDateString() : 
-                            'Sin evaluaciones'
-                          }
-                        </div>
-                        <div className="flex items-center">
-                          <MessageSquare className="w-3 h-3 mr-1" />
-                          Ver detalles
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })
-          )}
+          <PatientsTable />
         </div>
 
         {/* Quick actions */}

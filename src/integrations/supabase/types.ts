@@ -184,6 +184,7 @@ export type Database = {
         Row: {
           codigo_psicologo: string | null
           created_at: string | null
+          diagnostico: string | null
           edad: number | null
           email: string
           especialidad: string | null
@@ -198,6 +199,7 @@ export type Database = {
         Insert: {
           codigo_psicologo?: string | null
           created_at?: string | null
+          diagnostico?: string | null
           edad?: number | null
           email: string
           especialidad?: string | null
@@ -212,6 +214,7 @@ export type Database = {
         Update: {
           codigo_psicologo?: string | null
           created_at?: string | null
+          diagnostico?: string | null
           edad?: number | null
           email?: string
           especialidad?: string | null
