@@ -13,9 +13,11 @@ interface Patient {
   id: string;
   nombre: string;
   edad?: number;
-  email: string;
+  email?: string;
   codigo_psicologo?: string;
   created_at?: string;
+  proxima_cita?: string;
+  genero?: string;
   lastEvaluation?: {
     tipo_prueba: string;
     resultado_numerico: number;
@@ -25,6 +27,12 @@ interface Patient {
     contenido: string;
     fecha: string;
   };
+}
+
+interface DashboardStats {
+  totalPacientes: number;
+  promedioEmocional: number;
+  proximasCitas: Patient[];
 }
 
 const getEmotionFromScore = (score: number, testType: string) => {
@@ -49,6 +57,11 @@ const PsychologistDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [alertsCount, setAlertsCount] = useState(0);
+  const [stats, setStats] = useState<DashboardStats>({
+    totalPacientes: 0,
+    promedioEmocional: 0,
+    proximasCitas: []
+  });
 
   useEffect(() => {
     fetchPatients();
@@ -57,11 +70,9 @@ const PsychologistDashboard = () => {
 
   const fetchPatients = async () => {
     try {
-      // Fetch patients with their psychologist code
+      // Use secure function to get only psychologist's patients
       const { data: patientsData, error: patientsError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('rol', 'paciente');
+        .rpc('get_psychologist_patients');
 
       if (patientsError) throw patientsError;
 
@@ -75,7 +86,7 @@ const PsychologistDashboard = () => {
             .eq('paciente_id', patient.id)
             .order('fecha', { ascending: false })
             .limit(1)
-            .single();
+            .maybeSingle();
 
           // Get latest note
           const { data: noteData } = await supabase
@@ -84,7 +95,7 @@ const PsychologistDashboard = () => {
             .eq('paciente_id', patient.id)
             .order('fecha', { ascending: false })
             .limit(1)
-            .single();
+            .maybeSingle();
 
           return {
             ...patient,
@@ -95,6 +106,7 @@ const PsychologistDashboard = () => {
       );
 
       setPatients(patientsWithData);
+      calculateStats(patientsWithData);
     } catch (error) {
       toast({
         title: "Error",
@@ -104,6 +116,39 @@ const PsychologistDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateStats = (patientsData: Patient[]) => {
+    // Calculate emotional average from evaluations
+    const evaluationsWithScores = patientsData.filter(p => p.lastEvaluation);
+    const totalScore = evaluationsWithScores.reduce((sum, p) => {
+      return sum + (p.lastEvaluation?.resultado_numerico || 0);
+    }, 0);
+    const averageScore = evaluationsWithScores.length > 0 
+      ? totalScore / evaluationsWithScores.length 
+      : 0;
+
+    // Get upcoming appointments (next 7 days)
+    const now = new Date();
+    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const upcomingAppointments = patientsData
+      .filter(p => {
+        if (!p.proxima_cita) return false;
+        const appointmentDate = new Date(p.proxima_cita);
+        return appointmentDate >= now && appointmentDate <= nextWeek;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.proxima_cita!);
+        const dateB = new Date(b.proxima_cita!);
+        return dateA.getTime() - dateB.getTime();
+      })
+      .slice(0, 5); // Show next 5 appointments
+
+    setStats({
+      totalPacientes: patientsData.length,
+      promedioEmocional: Math.round(averageScore * 10) / 10,
+      proximasCitas: upcomingAppointments
+    });
   };
 
   const fetchAlertsCount = async () => {
@@ -165,8 +210,8 @@ const PsychologistDashboard = () => {
         {/* Quick stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           <Card className="card-soft text-center py-4">
-            <div className="text-2xl font-bold text-primary">{patients.length}</div>
-            <div className="text-xs text-muted">Pacientes</div>
+            <div className="text-2xl font-bold text-primary">{stats.totalPacientes}</div>
+            <div className="text-xs text-muted">Pacientes Activos</div>
           </Card>
           <Card 
             className="card-soft text-center py-4 cursor-pointer hover:shadow-md transition-shadow"
@@ -179,12 +224,50 @@ const PsychologistDashboard = () => {
             <div className="text-xs text-muted">Alertas</div>
           </Card>
           <Card className="card-soft text-center py-4">
-            <div className="text-2xl font-bold text-lavender">
-              {patients.filter(p => p.lastEvaluation).length}
+            <div className="text-2xl font-bold text-accent">
+              {stats.promedioEmocional.toFixed(1)}
             </div>
-            <div className="text-xs text-muted">Activos</div>
+            <div className="text-xs text-muted">Promedio Emocional</div>
           </Card>
         </div>
+
+        {/* Upcoming appointments */}
+        {stats.proximasCitas.length > 0 && (
+          <Card className="card-soft bg-gradient-to-br from-lavender/10 to-mint/10 border-lavender/30 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-primary flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Próximas Citas (7 días)
+              </h3>
+            </div>
+            <div className="space-y-2">
+              {stats.proximasCitas.map((patient) => (
+                <div 
+                  key={patient.id}
+                  className="flex items-center justify-between p-3 bg-card rounded-lg cursor-pointer hover:bg-card/80 transition-colors"
+                  onClick={() => handlePatientClick(patient.id)}
+                >
+                  <div>
+                    <div className="font-medium text-sm">{patient.nombre}</div>
+                    <div className="text-xs text-muted">
+                      {new Date(patient.proxima_cita!).toLocaleDateString('es-ES', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'short'
+                      })} - {new Date(patient.proxima_cita!).toLocaleTimeString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {patient.edad} años
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {/* Patients list */}
         <div className="space-y-4">

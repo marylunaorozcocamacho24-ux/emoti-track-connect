@@ -192,6 +192,7 @@ export type Database = {
           institucion: string | null
           nombre: string
           numero_licencia: string | null
+          proxima_cita: string | null
           rol: string
         }
         Insert: {
@@ -205,6 +206,7 @@ export type Database = {
           institucion?: string | null
           nombre: string
           numero_licencia?: string | null
+          proxima_cita?: string | null
           rol: string
         }
         Update: {
@@ -218,6 +220,7 @@ export type Database = {
           institucion?: string | null
           nombre?: string
           numero_licencia?: string | null
+          proxima_cita?: string | null
           rol?: string
         }
         Relationships: []
