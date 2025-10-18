@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { Navigation } from "@/components/Navigation";
 import EMIAssistant from "@/components/EMIAssistant";
+import PsychologistSuggestions from "@/components/PsychologistSuggestions";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Smile, Meh, Frown, Heart, Brain, Zap, MessageCircle } from "lucide-react";
@@ -273,6 +274,9 @@ const PatientDashboardNew = () => {
               <MessageCircle className="w-5 h-5 mr-2" />
               Hablar con EMI (Asistente Emocional)
             </Button>
+
+            {/* Psychologist Suggestions */}
+            <PsychologistSuggestions />
           </>
         )}
       </div>
