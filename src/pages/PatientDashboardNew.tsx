@@ -122,8 +122,8 @@ const PatientDashboardNew = () => {
       }
 
       toast({
-        title: "Test completado",
-        description: "Tu evaluación ha sido guardada exitosamente.",
+        title: "¡Resultados guardados correctamente!",
+        description: "Tu psicólogo podrá ver tu evaluación emocional",
       });
     } catch (error) {
       console.error("Error saving test:", error);

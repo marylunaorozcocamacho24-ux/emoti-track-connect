@@ -57,29 +57,51 @@ const DailyEvaluation = () => {
       }, 0);
 
       // Save to database
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          toast({
+            title: "Error",
+            description: "No se pudo identificar al usuario",
+            variant: "destructive",
+          });
+          return;
+        }
+
         // Save PHQ-2
-        await supabase.from('evaluaciones').insert({
+        const { error: phqError } = await supabase.from('evaluaciones').insert({
           paciente_id: user.id,
           tipo_prueba: 'PHQ-2',
-          resultado_numerico: phq2Score
+          resultado_numerico: phq2Score,
+          observacion: `Respuestas: ${newAnswers.slice(0, 2).join(', ')}`
         });
+
+        if (phqError) throw phqError;
 
         // Save GAD-2
-        await supabase.from('evaluaciones').insert({
+        const { error: gadError } = await supabase.from('evaluaciones').insert({
           paciente_id: user.id,
           tipo_prueba: 'GAD-2',
-          resultado_numerico: gad2Score
+          resultado_numerico: gad2Score,
+          observacion: `Respuestas: ${newAnswers.slice(2, 4).join(', ')}`
         });
 
+        if (gadError) throw gadError;
+
         toast({
-          title: "¡Evaluación completada!",
-          description: "Tus resultados han sido guardados"
+          title: "¡Resultados guardados correctamente!",
+          description: "Tu psicólogo podrá ver tu evaluación",
+        });
+
+        navigate('/paciente');
+      } catch (error) {
+        console.error("Error al guardar evaluación:", error);
+        toast({
+          title: "Error al guardar",
+          description: "No se pudieron guardar los resultados. Intenta nuevamente.",
+          variant: "destructive",
         });
       }
-      
-      navigate('/paciente');
     } else {
       setCurrentQuestion(prev => prev + 1);
       setCurrentAnswer('');
