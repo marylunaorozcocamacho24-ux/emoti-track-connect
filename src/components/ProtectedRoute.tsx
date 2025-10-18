@@ -14,40 +14,76 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   const [hasRole, setHasRole] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setUser(session?.user ?? null);
+        if (!mounted) return;
+        
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        
+        // Check role after auth state changes
+        if (currentUser && requiredRole) {
+          setTimeout(() => {
+            supabase
+              .from('user_roles')
+              .select('role')
+              .eq('user_id', currentUser.id)
+              .eq('role', requiredRole)
+              .maybeSingle()
+              .then(({ data }) => {
+                if (mounted) {
+                  setHasRole(!!data);
+                  setLoading(false);
+                }
+              });
+          }, 0);
+        } else if (currentUser) {
+          setHasRole(true);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    // Check role if required
-    if (user && requiredRole) {
-      supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', requiredRole)
-        .maybeSingle()
-        .then(({ data, error }) => {
-          setHasRole(!error && !!data);
+    // Check for existing session on mount
+    const initAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
+      
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      
+      if (currentUser && requiredRole) {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', currentUser.id)
+          .eq('role', requiredRole)
+          .maybeSingle();
+        
+        if (mounted) {
+          setHasRole(!!data);
           setLoading(false);
-        });
-    } else if (user) {
-      setHasRole(true);
-      setLoading(false);
-    }
-  }, [user, requiredRole]);
+        }
+      } else if (currentUser) {
+        setHasRole(true);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [requiredRole]);
 
   if (loading) {
     return (

@@ -17,25 +17,26 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check if user is already logged in - only once on mount
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        // Check user role and redirect
-        supabase
+        const { data } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .maybeSingle()
-          .then(({ data }) => {
-            if (data?.role === 'paciente') {
-              navigate('/paciente');
-            } else if (data?.role === 'psicologo') {
-              navigate('/psicologo');
-            }
-          });
+          .maybeSingle();
+        
+        if (data?.role === 'paciente') {
+          navigate('/paciente', { replace: true });
+        } else if (data?.role === 'psicologo') {
+          navigate('/psicologo', { replace: true });
+        }
       }
-    });
-  }, [navigate]);
+    };
+    
+    checkSession();
+  }, []); // Only run once on mount
 
   const handleSelectType = (type: 'paciente' | 'psicologo') => {
     setUserType(type);
@@ -54,8 +55,16 @@ const Login = () => {
 
       if (error) throw error;
 
+      // Check if email is verified
+      if (!data.user.email_confirmed_at) {
+        await supabase.auth.signOut();
+        toast.error("Por favor verifica tu correo antes de iniciar sesión. Revisa tu bandeja de entrada.");
+        setLoading(false);
+        return;
+      }
+
       // Verify user has correct role
-      const { data: roleData, error: roleError } = await supabase
+      const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', data.user.id)
@@ -69,10 +78,11 @@ const Login = () => {
 
       toast.success("¡Inicio de sesión exitoso!");
       
+      // Use replace to avoid history issues
       if (userType === 'paciente') {
-        navigate('/paciente');
+        navigate('/paciente', { replace: true });
       } else {
-        navigate('/psicologo');
+        navigate('/psicologo', { replace: true });
       }
     } catch (error) {
       if (error instanceof Error) {
