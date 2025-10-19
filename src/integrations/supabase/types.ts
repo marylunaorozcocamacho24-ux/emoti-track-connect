@@ -46,6 +46,53 @@ export type Database = {
           },
         ]
       }
+      asignaciones_tests: {
+        Row: {
+          analisis_ia: Json | null
+          completado: boolean | null
+          fecha_asignacion: string | null
+          fecha_completado: string | null
+          fecha_limite: string | null
+          id: string
+          observaciones_psicologo: string | null
+          paciente_id: string
+          psicologo_id: string
+          test_id: string
+        }
+        Insert: {
+          analisis_ia?: Json | null
+          completado?: boolean | null
+          fecha_asignacion?: string | null
+          fecha_completado?: string | null
+          fecha_limite?: string | null
+          id?: string
+          observaciones_psicologo?: string | null
+          paciente_id: string
+          psicologo_id: string
+          test_id: string
+        }
+        Update: {
+          analisis_ia?: Json | null
+          completado?: boolean | null
+          fecha_asignacion?: string | null
+          fecha_completado?: string | null
+          fecha_limite?: string | null
+          id?: string
+          observaciones_psicologo?: string | null
+          paciente_id?: string
+          psicologo_id?: string
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asignaciones_tests_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests_psicologicos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evaluaciones: {
         Row: {
           fecha: string | null
@@ -120,6 +167,89 @@ export type Database = {
           },
         ]
       }
+      preguntas_test: {
+        Row: {
+          created_at: string | null
+          id: string
+          opciones: Json | null
+          orden: number
+          test_id: string
+          texto: string
+          tipo: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          opciones?: Json | null
+          orden: number
+          test_id: string
+          texto: string
+          tipo?: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          opciones?: Json | null
+          orden?: number
+          test_id?: string
+          texto?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preguntas_test_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests_psicologicos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      respuestas_tests: {
+        Row: {
+          asignacion_id: string
+          created_at: string | null
+          id: string
+          paciente_id: string
+          pregunta_id: string
+          respuesta: string
+          valor_numerico: number | null
+        }
+        Insert: {
+          asignacion_id: string
+          created_at?: string | null
+          id?: string
+          paciente_id: string
+          pregunta_id: string
+          respuesta: string
+          valor_numerico?: number | null
+        }
+        Update: {
+          asignacion_id?: string
+          created_at?: string | null
+          id?: string
+          paciente_id?: string
+          pregunta_id?: string
+          respuesta?: string
+          valor_numerico?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "respuestas_tests_asignacion_id_fkey"
+            columns: ["asignacion_id"]
+            isOneToOne: false
+            referencedRelation: "asignaciones_tests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "respuestas_tests_pregunta_id_fkey"
+            columns: ["pregunta_id"]
+            isOneToOne: false
+            referencedRelation: "preguntas_test"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sugerencias: {
         Row: {
           fecha: string | null
@@ -158,6 +288,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tests_psicologicos: {
+        Row: {
+          activo: boolean | null
+          config_ia: Json | null
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          nombre: string
+          psicologo_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          config_ia?: Json | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          psicologo_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          config_ia?: Json | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          psicologo_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
