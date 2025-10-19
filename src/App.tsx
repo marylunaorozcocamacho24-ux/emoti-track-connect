@@ -18,6 +18,13 @@ import PatientProfile from "./pages/PatientProfile";
 import PatientProfileDetail from "./pages/PatientProfileDetail";
 import AlertsView from "./pages/AlertsView";
 import PsychologistSettings from "./pages/PsychologistSettings";
+import PsychologistTests from "./pages/PsychologistTests";
+import CreateEditTest from "./pages/CreateEditTest";
+import AssignTest from "./pages/AssignTest";
+import PatientTests from "./pages/PatientTests";
+import TakeTest from "./pages/TakeTest";
+import TestResults from "./pages/TestResults";
+import PsychologistTestResults from "./pages/PsychologistTestResults";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +46,9 @@ const App = () => (
           <Route path="/resultados" element={<ProtectedRoute requiredRole="paciente"><EvaluationResults /></ProtectedRoute>} />
           <Route path="/historial" element={<ProtectedRoute requiredRole="paciente"><PatientHistory /></ProtectedRoute>} />
           <Route path="/perfil" element={<ProtectedRoute requiredRole="paciente"><PatientProfile /></ProtectedRoute>} />
+          <Route path="/paciente/tests" element={<ProtectedRoute requiredRole="paciente"><PatientTests /></ProtectedRoute>} />
+          <Route path="/paciente/tests/responder/:assignmentId" element={<ProtectedRoute requiredRole="paciente"><TakeTest /></ProtectedRoute>} />
+          <Route path="/paciente/tests/resultados/:assignmentId" element={<ProtectedRoute requiredRole="paciente"><TestResults /></ProtectedRoute>} />
           
           {/* Protected Psychologist Routes */}
           <Route path="/psicologo" element={<ProtectedRoute requiredRole="psicologo"><PsychologistDashboardNew /></ProtectedRoute>} />
@@ -46,6 +56,11 @@ const App = () => (
           <Route path="/paciente/:patientId" element={<ProtectedRoute requiredRole="psicologo"><PatientProfileDetail /></ProtectedRoute>} />
           <Route path="/alertas" element={<ProtectedRoute requiredRole="psicologo"><AlertsView /></ProtectedRoute>} />
           <Route path="/configuracion-psicologo" element={<ProtectedRoute requiredRole="psicologo"><PsychologistSettings /></ProtectedRoute>} />
+          <Route path="/psicologo/tests" element={<ProtectedRoute requiredRole="psicologo"><PsychologistTests /></ProtectedRoute>} />
+          <Route path="/psicologo/tests/crear" element={<ProtectedRoute requiredRole="psicologo"><CreateEditTest /></ProtectedRoute>} />
+          <Route path="/psicologo/tests/editar/:testId" element={<ProtectedRoute requiredRole="psicologo"><CreateEditTest /></ProtectedRoute>} />
+          <Route path="/psicologo/tests/asignar/:testId" element={<ProtectedRoute requiredRole="psicologo"><AssignTest /></ProtectedRoute>} />
+          <Route path="/psicologo/tests/resultados/:testId" element={<ProtectedRoute requiredRole="psicologo"><PsychologistTestResults /></ProtectedRoute>} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

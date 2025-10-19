@@ -277,6 +277,24 @@ const PatientDashboardNew = () => {
 
             {/* Psychologist Suggestions */}
             <PsychologistSuggestions />
+
+            {/* Evaluaciones Psicológicas Button */}
+            <Card className="card-soft border-2 border-primary/20 hover:border-primary/40 transition-colors">
+              <div className="text-center space-y-4">
+                <div className="text-4xl">📋</div>
+                <h3 className="text-xl font-bold text-primary">Evaluaciones Psicológicas</h3>
+                <p className="text-muted-foreground">
+                  Responde los tests asignados por tu psicólogo y consulta tus resultados
+                </p>
+                <Button
+                  onClick={() => navigate('/paciente/tests')}
+                  className="w-full pill-button bg-primary hover:bg-primary/90 text-primary-foreground"
+                  size="lg"
+                >
+                  Ver Mis Evaluaciones
+                </Button>
+              </div>
+            </Card>
           </>
         )}
       </div>

@@ -152,13 +152,22 @@ const PsychologistDashboardNew = () => {
               <SidebarTrigger />
               <h1 className="text-2xl font-bold text-primary">Panel de Pacientes</h1>
             </div>
-            <Button 
-              onClick={handleAddPatient}
-              className="bg-coral hover:bg-coral/90 text-white rounded-xl"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Paciente
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => navigate('/psicologo/tests')}
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl"
+              >
+                📋 Evaluaciones
+              </Button>
+              <Button 
+                onClick={handleAddPatient}
+                className="bg-coral hover:bg-coral/90 text-white rounded-xl"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nuevo Paciente
+              </Button>
+            </div>
           </header>
 
           {/* Content */}
