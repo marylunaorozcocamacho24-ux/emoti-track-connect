@@ -8,10 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, User, Bell, Shield, Settings, LogOut, Edit3 } from "lucide-react";
 
 const PatientProfile = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [notifications, setNotifications] = useState({
     dailyReminder: true,
@@ -34,9 +37,18 @@ const PatientProfile = () => {
     setIsEditing(false);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('userType');
-    navigate('/');
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo cerrar sesión",
+        variant: "destructive"
+      });
+    } else {
+      localStorage.clear();
+      navigate('/', { replace: true });
+    }
   };
 
   return (
