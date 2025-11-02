@@ -5,7 +5,7 @@ import { User } from "@supabase/supabase-js";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'paciente' | 'psicologo';
+  requiredRole?: 'paciente' | 'psicologo' | 'administrador';
 }
 
 export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {

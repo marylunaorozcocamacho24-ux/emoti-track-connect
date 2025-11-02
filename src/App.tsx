@@ -26,6 +26,9 @@ import TakeTest from "./pages/TakeTest";
 import TestResults from "./pages/TestResults";
 import PsychologistTestResults from "./pages/PsychologistTestResults";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminTests from "./pages/AdminTests";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +64,11 @@ const App = () => (
           <Route path="/psicologo/tests/editar/:testId" element={<ProtectedRoute requiredRole="psicologo"><CreateEditTest /></ProtectedRoute>} />
           <Route path="/psicologo/tests/asignar/:testId" element={<ProtectedRoute requiredRole="psicologo"><AssignTest /></ProtectedRoute>} />
           <Route path="/psicologo/tests/resultados/:testId" element={<ProtectedRoute requiredRole="psicologo"><PsychologistTestResults /></ProtectedRoute>} />
+          
+          {/* Protected Administrator Routes */}
+          <Route path="/admin" element={<ProtectedRoute requiredRole="administrador"><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/usuarios" element={<ProtectedRoute requiredRole="administrador"><AdminUsers /></ProtectedRoute>} />
+          <Route path="/admin/tests" element={<ProtectedRoute requiredRole="administrador"><AdminTests /></ProtectedRoute>} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

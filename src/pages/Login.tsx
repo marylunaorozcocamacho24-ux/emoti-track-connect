@@ -11,7 +11,7 @@ import { toast } from "sonner";
 const Login = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<'select' | 'login'>('select');
-  const [userType, setUserType] = useState<'paciente' | 'psicologo' | null>(null);
+  const [userType, setUserType] = useState<'paciente' | 'psicologo' | 'administrador' | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,8 @@ const Login = () => {
           navigate('/paciente', { replace: true });
         } else if (data?.role === 'psicologo') {
           navigate('/psicologo', { replace: true });
+        } else if (data?.role === 'administrador') {
+          navigate('/admin', { replace: true });
         }
       }
     };
@@ -38,7 +40,7 @@ const Login = () => {
     checkSession();
   }, []); // Only run once on mount
 
-  const handleSelectType = (type: 'paciente' | 'psicologo') => {
+  const handleSelectType = (type: 'paciente' | 'psicologo' | 'administrador') => {
     setUserType(type);
     setMode('login');
   };
@@ -81,8 +83,10 @@ const Login = () => {
       // Use replace to avoid history issues
       if (userType === 'paciente') {
         navigate('/paciente', { replace: true });
-      } else {
+      } else if (userType === 'psicologo') {
         navigate('/psicologo', { replace: true });
+      } else if (userType === 'administrador') {
+        navigate('/admin', { replace: true });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -153,6 +157,15 @@ const Login = () => {
           {mode === 'select' ? (
             <div className="space-y-4">
               <Button
+                onClick={() => handleSelectType('administrador')}
+                className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+                size="lg"
+              >
+                <span className="text-2xl mr-3">🛡️</span>
+                Ingresar como Administrador
+              </Button>
+
+              <Button
                 onClick={() => handleSelectType('psicologo')}
                 variant="button-primary"
                 className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
@@ -185,7 +198,11 @@ const Login = () => {
 
               <div className="text-center mb-6">
                 <h2 className="text-xl font-bold text-primary">
-                  {userType === 'paciente' ? '🧠 Inicio de Sesión Paciente' : '👩‍⚕️ Inicio de Sesión Psicólogo'}
+                  {userType === 'paciente' 
+                    ? '🧠 Inicio de Sesión Paciente' 
+                    : userType === 'psicologo'
+                    ? '👩‍⚕️ Inicio de Sesión Psicólogo'
+                    : '🛡️ Inicio de Sesión Administrador'}
                 </h2>
               </div>
 
