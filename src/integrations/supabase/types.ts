@@ -393,7 +393,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_statistics: {
+        Row: {
+          tests_completados: number | null
+          tests_pendientes: number | null
+          total_evaluaciones: number | null
+          total_pacientes: number | null
+          total_psicologos: number | null
+          total_tests: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_psychologist_patients: {
@@ -417,6 +427,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_administrator: { Args: { _user_id: string }; Returns: boolean }
       is_psychologist: { Args: { _user_id: string }; Returns: boolean }
       psychologist_has_patient: {
         Args: { _patient_id: string; _psychologist_id: string }
