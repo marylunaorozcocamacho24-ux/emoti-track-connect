@@ -397,7 +397,7 @@ export type Database = {
     }
     Functions: {
       get_psychologist_patients: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           codigo_psicologo: string
           edad: number
@@ -417,17 +417,14 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_psychologist: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      is_psychologist: { Args: { _user_id: string }; Returns: boolean }
       psychologist_has_patient: {
         Args: { _patient_id: string; _psychologist_id: string }
         Returns: boolean
       }
     }
     Enums: {
-      app_role: "paciente" | "psicologo"
+      app_role: "paciente" | "psicologo" | "administrador"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -555,7 +552,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["paciente", "psicologo"],
+      app_role: ["paciente", "psicologo", "administrador"],
     },
   },
 } as const
