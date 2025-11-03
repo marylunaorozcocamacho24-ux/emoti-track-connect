@@ -5,12 +5,12 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Stethoscope } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
+import brainCharacter from "@/assets/brain-character.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 
-// Input validation schema
 const psychologistSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
   email: z.string().trim().email("Email inválido").max(255, "Email muy largo"),
@@ -41,13 +41,9 @@ const PsychologistRegistration = () => {
     setErrors({});
 
     try {
-      // Validate input
       const validatedData = psychologistSchema.parse(formData);
-
-      // Generate unique psychologist code
       const psychologistCode = `PSI-${Date.now().toString(36).toUpperCase()}`;
 
-      // Sign up with Supabase
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: validatedData.email,
         password: validatedData.password,
@@ -63,7 +59,6 @@ const PsychologistRegistration = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("No se pudo crear el usuario");
 
-      // Update additional profile data
       const { error: updateError } = await supabase
         .from('users')
         .update({
@@ -114,131 +109,136 @@ const PsychologistRegistration = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      {/* Header */}
-      <div className="max-w-md mx-auto mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate('/')}
-          className="mb-4 text-muted hover:text-primary"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Volver
-        </Button>
-        
-        <div className="text-center">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-            <Stethoscope className="w-8 h-8 text-primary-foreground" />
+    <div className="min-h-screen p-4 pb-20">
+      <div className="max-w-md mx-auto space-y-6">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="mb-2 text-muted-foreground hover:text-primary"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver
+          </Button>
+          
+          <div className="flex justify-center">
+            <img 
+              src={brainCharacter} 
+              alt="Brain Character" 
+              className="w-24 h-24 object-contain drop-shadow-xl animate-scale-in"
+            />
           </div>
-          <h1 className="text-2xl font-bold text-primary mb-2">Registro Profesional</h1>
-          <p className="text-muted text-sm">Configura tu perfil de psicólogo</p>
+          
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10">
+            <Heart className="w-5 h-5 text-primary" />
+            <span className="text-sm font-semibold text-primary-foreground">Psicólogo/a</span>
+          </div>
+          
+          <h1 className="text-3xl font-bold text-foreground">Registro Profesional</h1>
+          <p className="text-muted-foreground text-sm">Configura tu perfil para comenzar a ayudar</p>
         </div>
-      </div>
 
-      {/* Registration Form */}
-      <div className="max-w-md mx-auto">
-        <Card className="card-soft">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name" className="text-primary font-medium">Nombre completo *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
-                  placeholder="Dr./Dra. Nombre Apellido"
-                  required
-                />
-              </div>
+        {/* Registration Form */}
+        <Card className="card-soft border-2 border-border/30">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <Label htmlFor="name" className="text-foreground font-medium">Nombre completo *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50"
+                placeholder="Dr./Dra. Nombre Apellido"
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="email" className="text-primary font-medium">Correo electrónico *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
-                  placeholder="tuemail@ejemplo.com"
-                  required
-                />
-                {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
-              </div>
+            <div>
+              <Label htmlFor="email" className="text-foreground font-medium">Correo electrónico *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50"
+                placeholder="tu@email.com"
+                required
+              />
+              {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
+            </div>
 
-              <div>
-                <Label htmlFor="password" className="text-primary font-medium">Contraseña *</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
-                  placeholder="Mínimo 6 caracteres"
-                  required
-                />
-                {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
-              </div>
+            <div>
+              <Label htmlFor="password" className="text-foreground font-medium">Contraseña *</Label>
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50"
+                placeholder="Mínimo 6 caracteres"
+                required
+              />
+              {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
+            </div>
 
-              <div>
-                <Label htmlFor="specialty" className="text-primary font-medium">Especialidad *</Label>
-                <Select onValueChange={(value) => handleInputChange('specialty', value)}>
-                  <SelectTrigger className="mt-1 border-soft-pink focus:ring-primary/20">
-                    <SelectValue placeholder="Selecciona tu especialidad" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {specialties.map(specialty => (
-                      <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label htmlFor="specialty" className="text-foreground font-medium">Especialidad *</Label>
+              <Select onValueChange={(value) => handleInputChange('specialty', value)}>
+                <SelectTrigger className="mt-2 h-12 rounded-xl border-2 border-border/50">
+                  <SelectValue placeholder="Selecciona tu especialidad" />
+                </SelectTrigger>
+                <SelectContent>
+                  {specialties.map(specialty => (
+                    <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div>
-                <Label htmlFor="licenseNumber" className="text-primary font-medium">Número de cédula profesional *</Label>
-                <Input
-                  id="licenseNumber"
-                  value={formData.licenseNumber}
-                  onChange={(e) => handleInputChange('licenseNumber', e.target.value)}
-                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
-                  placeholder="Ej: 1234567"
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="licenseNumber" className="text-foreground font-medium">Número de cédula profesional *</Label>
+              <Input
+                id="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={(e) => handleInputChange('licenseNumber', e.target.value)}
+                className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50"
+                placeholder="Ej: 1234567"
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="institution" className="text-primary font-medium">Institución/Clínica</Label>
-                <Input
-                  id="institution"
-                  value={formData.institution}
-                  onChange={(e) => handleInputChange('institution', e.target.value)}
-                  className="mt-1 border-soft-pink focus:ring-primary/20 focus:border-primary/50"
-                  placeholder="Hospital, clínica o práctica privada"
-                />
-              </div>
+            <div>
+              <Label htmlFor="institution" className="text-foreground font-medium">Institución/Clínica (opcional)</Label>
+              <Input
+                id="institution"
+                value={formData.institution}
+                onChange={(e) => handleInputChange('institution', e.target.value)}
+                className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50"
+                placeholder="Hospital, clínica o práctica privada"
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="experience" className="text-primary font-medium">Años de experiencia *</Label>
-                <Select onValueChange={(value) => handleInputChange('experience', value)}>
-                  <SelectTrigger className="mt-1 border-soft-pink focus:ring-primary/20">
-                    <SelectValue placeholder="Selecciona tu experiencia" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0-2">0-2 años</SelectItem>
-                    <SelectItem value="3-5">3-5 años</SelectItem>
-                    <SelectItem value="6-10">6-10 años</SelectItem>
-                    <SelectItem value="11-15">11-15 años</SelectItem>
-                    <SelectItem value="15+">Más de 15 años</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label htmlFor="experience" className="text-foreground font-medium">Años de experiencia *</Label>
+              <Select onValueChange={(value) => handleInputChange('experience', value)}>
+                <SelectTrigger className="mt-2 h-12 rounded-xl border-2 border-border/50">
+                  <SelectValue placeholder="Selecciona tu experiencia" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0-2">0-2 años</SelectItem>
+                  <SelectItem value="3-5">3-5 años</SelectItem>
+                  <SelectItem value="6-10">6-10 años</SelectItem>
+                  <SelectItem value="11-15">11-15 años</SelectItem>
+                  <SelectItem value="15+">Más de 15 años</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Button
               type="submit"
-              className="pill-button w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md"
-              size="lg"
+              className="w-full h-12 gradient-button mt-6 border-0"
               disabled={loading || !formData.name || !formData.email || !formData.password || !formData.specialty || !formData.licenseNumber || !formData.experience}
             >
               {loading ? "Creando cuenta..." : "Crear perfil profesional"}
@@ -247,10 +247,10 @@ const PsychologistRegistration = () => {
         </Card>
 
         {/* Professional Notice */}
-        <div className="mt-6 p-4 bg-accent/20 rounded-lg border border-accent/30">
-          <h3 className="font-semibold text-primary text-sm mb-2">Verificación profesional</h3>
-          <p className="text-xs text-muted leading-relaxed">
-            Tu información será verificada antes de activar tu cuenta. Esto garantiza la seguridad y confianza de nuestros pacientes.
+        <div className="text-center p-4 bg-primary/10 rounded-2xl border border-primary/20">
+          <h3 className="font-semibold text-foreground text-sm mb-2">✓ Verificación profesional</h3>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Tu información será verificada para garantizar la seguridad de los pacientes.
           </p>
         </div>
       </div>

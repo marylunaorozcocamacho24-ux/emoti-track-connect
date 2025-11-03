@@ -8,74 +8,78 @@ All colors MUST be HSL and follow the specified palette.
 
 @layer base {
   :root {
-    /* Base neutral background - Warm beige */
-    --background: 44 53% 97%; /* #fff8eb */
-    --foreground: 236 29% 24%; /* #3c3970 - Deep purple for text */
+    /* Base - Pure white background */
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 263 30% 45%; /* Deep purple-gray for text */
 
     /* Card and surface colors */
     --card: 0 0% 100%; /* White cards */
-    --card-foreground: 236 29% 24%; /* #3c3970 */
+    --card-foreground: 263 30% 45%;
 
     /* Interactive surfaces */
     --popover: 0 0% 100%;
-    --popover-foreground: 236 29% 24%;
+    --popover-foreground: 263 30% 45%;
 
-    /* Primary - Deep purple for headers and titles */
-    --primary: 236 29% 24%; /* #3c3970 */
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Soft lilac */
+    --primary: 263 51% 82%; /* #CBB8E9 - Soft lilac */
+    --primary-foreground: 263 30% 30%; /* Dark purple for contrast */
 
-    /* Secondary - Turquoise for patient interface */
-    --secondary: 187 43% 54%; /* #51acb8 */
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary - Pastel blue */
+    --secondary: 198 71% 81%; /* #A7D8F2 - Pastel blue */
+    --secondary-foreground: 198 50% 25%; /* Dark blue for contrast */
     
-    /* Blue medium for main buttons */
-    --button-primary: 208 24% 58%; /* #7094b4 */
-    --button-primary-foreground: 0 0% 100%;
+    /* Button primary - Gradient lilac to pink */
+    --button-primary: 263 51% 82%; /* Lilac base */
+    --button-primary-foreground: 263 30% 30%;
+    
+    /* Button gradient colors */
+    --gradient-lilac: 263 51% 82%; /* #CBB8E9 */
+    --gradient-pink: 337 72% 88%; /* #F8C8DC */
 
-    /* Muted - Light blue for secondary backgrounds */
-    --muted: 208 75% 74%; /* #90bde9 */
-    --muted-foreground: 236 29% 24%;
+    /* Muted - Very light gray */
+    --muted: 0 0% 95%; /* #F2F2F2 */
+    --muted-foreground: 263 20% 50%;
 
-    /* Accent - Lavender blue for icons and borders */
-    --accent: 240 46% 62%; /* #7080ca */
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Mint green */
+    --accent: 123 38% 84%; /* #C8E6C9 - Mint green */
+    --accent-foreground: 123 40% 25%; /* Dark green for contrast */
 
-    /* Emotion/status colors */
-    --emotion-happy: 178 100% 25%; /* #007f7a - Positive indicators */
-    --emotion-neutral: 187 43% 54%; /* #51acb8 - Calm/neutral */
-    --emotion-sad: 208 24% 58%; /* #7094b4 - Blue */
-    --emotion-anxious: 0 55% 55%; /* #ca5050 - Red warnings */
+    /* Emotion/status colors - using pastel palette */
+    --emotion-happy: 123 38% 84%; /* Mint green - positive */
+    --emotion-neutral: 198 71% 81%; /* Pastel blue - calm */
+    --emotion-sad: 263 51% 82%; /* Soft lilac - reflective */
+    --emotion-anxious: 337 72% 88%; /* Dusty rose - gentle alert */
 
     /* Additional brand colors */
-    --pink-pastel: 298 53% 74%; /* #d99dde - Empathetic sections */
-    --coral: 0 67% 75%; /* #fc8080 - Action buttons/alerts */
-    --coral-dark: 0 55% 55%; /* #ca5050 - Destructive actions */
+    --pink-pastel: 337 72% 88%; /* #F8C8DC - Dusty rose */
+    --mint-green: 123 38% 84%; /* #C8E6C9 */
+    --lilac-soft: 263 51% 82%; /* #CBB8E9 */
 
     /* UI elements */
-    --destructive: 0 55% 55%; /* #ca5050 */
+    --destructive: 0 70% 70%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 46% 90%; /* Soft lavender border */
-    --input: 208 75% 95%; /* Very light blue for inputs */
-    --ring: 240 46% 62%; /* #7080ca */
+    --border: 263 30% 90%; /* Soft lavender border */
+    --input: 0 0% 98%; /* Almost white for inputs */
+    --ring: 263 51% 82%; /* Soft lilac ring */
 
-    --radius: 1rem;
+    --radius: 1.5rem;
     
     /* Sidebar specific */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 236 29% 24%;
-    --sidebar-primary: 236 29% 24%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 208 75% 74%;
-    --sidebar-accent-foreground: 236 29% 24%;
-    --sidebar-border: 240 46% 90%;
-    --sidebar-ring: 240 46% 62%;
+    --sidebar-foreground: 263 30% 45%;
+    --sidebar-primary: 263 51% 82%;
+    --sidebar-primary-foreground: 263 30% 30%;
+    --sidebar-accent: 198 71% 81%;
+    --sidebar-accent-foreground: 198 50% 25%;
+    --sidebar-border: 263 30% 90%;
+    --sidebar-ring: 263 51% 82%;
     
     /* Emotional background colors */
-    --emotion-bg-calm: 208 75% 94%; /* Very light blue */
-    --emotion-bg-sad: 298 53% 94%; /* Very light lavender */
-    --emotion-bg-stress: 0 67% 95%; /* Very light coral */
-    --emotion-bg-balanced: 187 43% 94%; /* Very light turquoise */
+    --emotion-bg-calm: 198 71% 95%; /* Very light pastel blue */
+    --emotion-bg-sad: 263 51% 95%; /* Very light lavender */
+    --emotion-bg-stress: 337 72% 95%; /* Very light dusty rose */
+    --emotion-bg-balanced: 123 38% 95%; /* Very light mint */
   }
 
   /* Dark mode not prioritized for mental health app - keeping light, warm theme */
@@ -101,16 +105,23 @@ All colors MUST be HSL and follow the specified palette.
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Nunito', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-image: 
-      radial-gradient(circle at 20% 30%, hsl(var(--emotion-happy) / 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, hsl(var(--pink-pastel) / 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 40% 80%, hsl(var(--muted) / 0.05) 0%, transparent 50%);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, 
+      hsl(var(--muted)) 0%, 
+      hsl(var(--background)) 30%,
+      hsl(var(--emotion-bg-calm)) 60%,
+      hsl(var(--emotion-bg-balanced)) 100%
+    );
   }
   
   /* Custom utility classes for EmotiTrack */
   .pill-button {
-    @apply rounded-full px-8 py-4 font-medium text-center transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105;
+    @apply rounded-full px-8 py-4 font-medium text-center transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105;
+  }
+  
+  .gradient-button {
+    background: linear-gradient(135deg, hsl(var(--gradient-lilac)) 0%, hsl(var(--gradient-pink)) 100%);
+    @apply text-white font-semibold rounded-full px-8 py-4 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105;
   }
   
   .emotion-icon {

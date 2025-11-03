@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import logo from "@/assets/emotitrack-logo.jpg";
+import brainCharacter from "@/assets/brain-character.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Brain, Heart, Shield } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -105,83 +106,84 @@ const Login = () => {
     }
   };
 
-  // Floating emoji animation
-  const emojis = ['😊', '😟', '😌', '😠', '😲'];
+  const floatingEmojis = ['🌸', '🌼', '💙', '💜', '✨', '🦋', '🌈', '💗'];
   
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center justify-center p-4">
-      {/* Floating emoji background pattern */}
+    <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-4">
+      {/* Floating decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute text-4xl opacity-10 animate-float"
+            className="absolute text-3xl opacity-20 animate-float"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${8 + Math.random() * 4}s`,
+              animationDuration: `${10 + Math.random() * 5}s`,
             }}
           >
-            {emojis[i % emojis.length]}
+            {floatingEmojis[i % floatingEmojis.length]}
           </div>
         ))}
       </div>
 
-      <div className="relative z-10 w-full max-w-md space-y-8 animate-fade-in">
+      <div className="relative z-10 w-full max-w-md space-y-6 animate-fade-in">
         {/* Logo and branding */}
         <div className="text-center space-y-6">
-          <div className="flex justify-center mb-6">
-            <div className="relative">
+          <div className="flex justify-center mb-4">
+            <div className="relative animate-scale-in">
               <img 
-                src={logo} 
-                alt="EmotiTrack Logo" 
-                className="w-32 h-32 object-contain animate-scale-in"
+                src={brainCharacter} 
+                alt="EmotiTrack Brain Character" 
+                className="w-40 h-40 object-contain drop-shadow-2xl"
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl -z-10 animate-pulse" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full blur-3xl -z-10 animate-pulse" />
             </div>
           </div>
           
-          <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h1 className="text-4xl font-bold text-primary leading-tight">
-              🌼 Bienvenido/a a EmotiTrack
+          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+              EmotiTrack
             </h1>
-            <p className="text-lg text-foreground/80">
-              Tu espacio para comprender y acompañar emociones.
+            <p className="text-xl font-medium text-foreground/90">
+              Tu bienestar emocional empieza aquí
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Bienvenido a tu recorrido emocional
             </p>
           </div>
         </div>
 
         {/* Login/Select mode */}
-        <Card className="p-8 backdrop-blur-sm bg-card/95 border border-border shadow-2xl animate-fade-in rounded-3xl" style={{ animationDelay: '0.4s' }}>
+        <Card className="p-8 backdrop-blur-xl bg-card/80 border-2 border-border/50 shadow-2xl animate-fade-in rounded-3xl" style={{ animationDelay: '0.4s' }}>
           {mode === 'select' ? (
             <div className="space-y-4">
               <Button
                 onClick={() => handleSelectType('administrador')}
-                className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+                className="w-full h-16 text-base font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white border-0"
                 size="lg"
               >
-                <span className="text-2xl mr-3">🛡️</span>
-                Ingresar como Administrador
+                <Shield className="w-6 h-6 mr-3" />
+                Administrador
               </Button>
 
               <Button
                 onClick={() => handleSelectType('psicologo')}
-                variant="button-primary"
-                className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="w-full h-16 text-base font-semibold rounded-2xl gradient-button border-0"
                 size="lg"
               >
-                <span className="text-2xl mr-3">👩‍⚕️</span>
-                Ingresar como Psicólogo
+                <Heart className="w-6 h-6 mr-3" />
+                Psicólogo/a
               </Button>
               
               <Button
                 onClick={() => handleSelectType('paciente')}
-                className="w-full h-16 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-secondary hover:bg-secondary/90 text-white"
+                className="w-full h-16 text-base font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-secondary hover:bg-secondary/90 text-secondary-foreground border-0"
                 size="lg"
               >
-                <span className="text-2xl mr-3">🧠</span>
-                Ingresar como Paciente
+                <Brain className="w-6 h-6 mr-3" />
+                Paciente
               </Button>
             </div>
           ) : (
@@ -191,61 +193,71 @@ const Login = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setMode('select')}
-                className="mb-4"
+                className="mb-2 text-muted-foreground hover:text-primary"
               >
                 ← Volver
               </Button>
 
               <div className="text-center mb-6">
-                <h2 className="text-xl font-bold text-primary">
-                  {userType === 'paciente' 
-                    ? '🧠 Inicio de Sesión Paciente' 
-                    : userType === 'psicologo'
-                    ? '👩‍⚕️ Inicio de Sesión Psicólogo'
-                    : '🛡️ Inicio de Sesión Administrador'}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-3">
+                  {userType === 'paciente' && <Brain className="w-5 h-5 text-secondary" />}
+                  {userType === 'psicologo' && <Heart className="w-5 h-5 text-primary" />}
+                  {userType === 'administrador' && <Shield className="w-5 h-5 text-purple-500" />}
+                  <span className="text-sm font-semibold text-foreground">
+                    {userType === 'paciente' 
+                      ? 'Paciente' 
+                      : userType === 'psicologo'
+                      ? 'Psicólogo/a'
+                      : 'Administrador'}
+                  </span>
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Iniciar Sesión
                 </h2>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="email">Correo electrónico</Label>
+                  <Label htmlFor="email" className="text-foreground font-medium">Correo electrónico</Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="mt-1"
+                    className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
+                    placeholder="tu@email.com"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="password">Contraseña</Label>
+                  <Label htmlFor="password" className="text-foreground font-medium">Contraseña</Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="mt-1"
+                    className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
+                    placeholder="••••••••"
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full h-12 gradient-button mt-6 border-0"
                   disabled={loading}
                 >
-                  {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                  {loading ? "Iniciando sesión..." : "Continuar"}
                 </Button>
 
                 <div className="text-center pt-4">
-                  <p className="text-sm text-muted">
+                  <p className="text-sm text-muted-foreground">
                     ¿No tienes cuenta?{' '}
                     <button
                       type="button"
                       onClick={handleRegister}
-                      className="text-primary hover:underline font-medium"
+                      className="text-primary hover:underline font-semibold"
                     >
                       Regístrate aquí
                     </button>
@@ -258,8 +270,8 @@ const Login = () => {
 
         {/* Footer text */}
         <div className="text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <p className="text-foreground/50 text-xs">
-            Versión Beta · Desarrollado con IA para la innovación en salud mental.
+          <p className="text-muted-foreground text-xs">
+            🌼 Versión Beta · Cuidando tu salud mental con tecnología
           </p>
         </div>
       </div>
