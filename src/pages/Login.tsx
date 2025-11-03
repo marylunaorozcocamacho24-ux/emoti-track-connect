@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import brainCharacter from "@/assets/brain-character.png";
+import brainCharacter from "@/assets/brain-character-new.png";
+import emotitrackLogo from "@/assets/emotitrack-logo.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Brain, Heart, Shield } from "lucide-react";
@@ -131,6 +132,15 @@ const Login = () => {
       <div className="relative z-10 w-full max-w-md space-y-6 animate-fade-in">
         {/* Logo and branding */}
         <div className="text-center space-y-6">
+          {/* EmotiTrack Logo */}
+          <div className="flex justify-center mb-2">
+            <img 
+              src={emotitrackLogo} 
+              alt="EmotiTrack Logo" 
+              className="w-32 h-auto object-contain"
+            />
+          </div>
+
           <div className="flex justify-center mb-4">
             <div className="relative animate-scale-in">
               <img 
@@ -139,6 +149,13 @@ const Login = () => {
                 className="w-40 h-40 object-contain drop-shadow-2xl"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full blur-3xl -z-10 animate-pulse" />
+              
+              {/* Chat bubble */}
+              <div className="absolute -right-8 top-8 bg-white rounded-2xl rounded-br-sm px-4 py-3 shadow-lg border-2 border-primary/20 animate-fade-in max-w-[200px]" style={{ animationDelay: '0.5s' }}>
+                <p className="text-sm font-medium text-foreground leading-snug">
+                  ¡Bienvenido(a)! Prepárate para iniciar tu recorrido emocional.
+                </p>
+              </div>
             </div>
           </div>
           
