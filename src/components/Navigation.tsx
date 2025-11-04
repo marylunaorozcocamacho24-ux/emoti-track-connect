@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, PenTool, BarChart3, User, Users, Bell, Settings } from "lucide-react";
+import { Home, PenTool, BarChart3, User, Users, ClipboardList, MessageSquare, Calendar, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -21,8 +21,10 @@ export const Navigation = ({ userType = 'patient' }: NavigationProps) => {
           ) : (
             <>
               <NavItem to="/psicologo" icon={Users} label="Pacientes" />
-              <NavItem to="/alertas" icon={Bell} label="Alertas" />
-              <NavItem to="/configuracion-psicologo" icon={Settings} label="Configuración" />
+              <NavItem to="/psicologo/tests" icon={ClipboardList} label="Exámenes" />
+              <NavItem to="/psicologo/agenda" icon={Calendar} label="Agenda" />
+              <NavItem to="/psicologo/mensajeria" icon={MessageSquare} label="Mensajes" />
+              <NavItem to="/psicologo/reportes" icon={BarChart3} label="Reportes" />
             </>
           )}
         </div>

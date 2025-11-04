@@ -25,6 +25,10 @@ import PatientTests from "./pages/PatientTests";
 import TakeTest from "./pages/TakeTest";
 import TestResults from "./pages/TestResults";
 import PsychologistTestResults from "./pages/PsychologistTestResults";
+import PsychologistTemplates from "./pages/PsychologistTemplates";
+import PsychologistMessaging from "./pages/PsychologistMessaging";
+import PsychologistAgenda from "./pages/PsychologistAgenda";
+import PsychologistReports from "./pages/PsychologistReports";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
@@ -55,6 +59,7 @@ const App = () => (
           
           {/* Protected Psychologist Routes */}
           <Route path="/psicologo" element={<ProtectedRoute requiredRole="psicologo"><PsychologistDashboardNew /></ProtectedRoute>} />
+          <Route path="/psicologo/plantillas" element={<ProtectedRoute requiredRole="psicologo"><PsychologistTemplates /></ProtectedRoute>} />
           <Route path="/psicologo-old" element={<ProtectedRoute requiredRole="psicologo"><PsychologistDashboard /></ProtectedRoute>} />
           <Route path="/paciente/:patientId" element={<ProtectedRoute requiredRole="psicologo"><PatientProfileDetail /></ProtectedRoute>} />
           <Route path="/alertas" element={<ProtectedRoute requiredRole="psicologo"><AlertsView /></ProtectedRoute>} />
@@ -64,6 +69,9 @@ const App = () => (
           <Route path="/psicologo/tests/editar/:testId" element={<ProtectedRoute requiredRole="psicologo"><CreateEditTest /></ProtectedRoute>} />
           <Route path="/psicologo/tests/asignar/:testId" element={<ProtectedRoute requiredRole="psicologo"><AssignTest /></ProtectedRoute>} />
           <Route path="/psicologo/tests/resultados/:testId" element={<ProtectedRoute requiredRole="psicologo"><PsychologistTestResults /></ProtectedRoute>} />
+          <Route path="/psicologo/mensajeria" element={<ProtectedRoute requiredRole="psicologo"><PsychologistMessaging /></ProtectedRoute>} />
+          <Route path="/psicologo/agenda" element={<ProtectedRoute requiredRole="psicologo"><PsychologistAgenda /></ProtectedRoute>} />
+          <Route path="/psicologo/reportes" element={<ProtectedRoute requiredRole="psicologo"><PsychologistReports /></ProtectedRoute>} />
           
           {/* Protected Administrator Routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole="administrador"><AdminDashboard /></ProtectedRoute>} />

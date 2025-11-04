@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, Users, Lightbulb, BarChart3, Settings } from "lucide-react";
+import { Users, FileText, ClipboardList, MessageSquare, Calendar, BarChart3, Settings } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,10 +14,12 @@ import {
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { title: "Inicio", url: "/psicologo", icon: Home },
-  { title: "Pacientes", url: "/psicologo", icon: Users },
-  { title: "Sugerencias", url: "/sugerencias", icon: Lightbulb },
-  { title: "Estadísticas", url: "/estadisticas", icon: BarChart3 },
+  { title: "Mis Pacientes", url: "/psicologo", icon: Users },
+  { title: "Plantillas", url: "/psicologo/plantillas", icon: FileText },
+  { title: "Mis Exámenes", url: "/psicologo/tests", icon: ClipboardList },
+  { title: "Mensajería", url: "/psicologo/mensajeria", icon: MessageSquare },
+  { title: "Agenda", url: "/psicologo/agenda", icon: Calendar },
+  { title: "Reportes", url: "/psicologo/reportes", icon: BarChart3 },
   { title: "Configuración", url: "/configuracion-psicologo", icon: Settings },
 ];
 

@@ -70,15 +70,11 @@ const PatientRegistration = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("No se pudo crear el usuario");
 
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({
-          edad: parseInt(validatedData.age),
-          codigo_psicologo: validatedData.accessCode
-        })
-        .eq('id', authData.user.id);
-
-      if (updateError) throw updateError;
+      // Server-side link: updates current user's record inside a SECURITY DEFINER function
+      const { data: linkOk, error: linkError } = await supabase
+        .rpc('link_patient_to_psychologist', { _code: validatedData.accessCode, _age: parseInt(validatedData.age) });
+      if (linkError) throw new Error('Error al vincular el código. Intenta nuevamente.');
+      if (!linkOk) throw new Error('El código no es válido o no se pudo vincular.');
 
       if (validatedData.personalNotes) {
         await supabase.from('notas').insert({

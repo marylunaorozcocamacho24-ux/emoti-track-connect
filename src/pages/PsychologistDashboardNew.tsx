@@ -231,13 +231,13 @@ const PsychologistDashboardNew = () => {
               <Button 
                 onClick={() => navigate('/psicologo/tests')}
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl"
+                className="border-primary/60 text-primary hover:bg-primary/10 rounded-xl"
               >
                 📋 Evaluaciones
               </Button>
               <Button 
                 onClick={handleAddPatient}
-                className="bg-coral hover:bg-coral/90 text-white rounded-xl"
+                className="bg-coral hover:bg-coral/90 text-white rounded-xl shadow-md"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Nuevo Paciente
