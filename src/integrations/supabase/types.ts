@@ -242,6 +242,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "respuestas_tests_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "respuestas_tests_pregunta_id_fkey"
             columns: ["pregunta_id"]
             isOneToOne: false
@@ -296,8 +303,13 @@ export type Database = {
           created_at: string | null
           descripcion: string | null
           id: string
+          metodo_aplicacion: string | null
           nombre: string
-          psicologo_id: string
+          objetivo: string | null
+          poblacion: string | null
+          psicologo_id: string | null
+          tiempo_estimado: string | null
+          tipo_respuesta: string | null
           updated_at: string | null
         }
         Insert: {
@@ -306,8 +318,13 @@ export type Database = {
           created_at?: string | null
           descripcion?: string | null
           id?: string
+          metodo_aplicacion?: string | null
           nombre: string
-          psicologo_id: string
+          objetivo?: string | null
+          poblacion?: string | null
+          psicologo_id?: string | null
+          tiempo_estimado?: string | null
+          tipo_respuesta?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -316,8 +333,13 @@ export type Database = {
           created_at?: string | null
           descripcion?: string | null
           id?: string
+          metodo_aplicacion?: string | null
           nombre?: string
-          psicologo_id?: string
+          objetivo?: string | null
+          poblacion?: string | null
+          psicologo_id?: string | null
+          tiempo_estimado?: string | null
+          tipo_respuesta?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -429,6 +451,11 @@ export type Database = {
       }
       is_administrator: { Args: { _user_id: string }; Returns: boolean }
       is_psychologist: { Args: { _user_id: string }; Returns: boolean }
+      is_valid_psychologist_code: { Args: { _code: string }; Returns: boolean }
+      link_patient_to_psychologist: {
+        Args: { _age: number; _code: string }
+        Returns: boolean
+      }
       psychologist_has_patient: {
         Args: { _patient_id: string; _psychologist_id: string }
         Returns: boolean

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Plus, Edit, Trash2, FileText, Eye, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Plus, Edit, Trash2, FileText, Eye, ShieldCheck, Download } from "lucide-react";
+import SeedTestsButton from "@/components/SeedTestsButton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -174,13 +175,16 @@ const AdminTests = () => {
                 <p className="text-sm opacity-90">Gestiona y administra los tests disponibles para psicólogos</p>
               </div>
             </div>
-            <Button
-              onClick={() => navigate('/psicologo/tests/crear')}
-              className="gradient-button border-0 shadow-lg hover:scale-105 transition-transform"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Test
-            </Button>
+            <div className="flex gap-2">
+              <SeedTestsButton onComplete={fetchTests} />
+              <Button
+                onClick={() => navigate('/psicologo/tests/crear')}
+                className="gradient-button border-0 shadow-lg hover:scale-105 transition-transform"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nuevo Test
+              </Button>
+            </div>
           </div>
         </div>
       </div>

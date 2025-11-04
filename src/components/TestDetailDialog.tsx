@@ -19,6 +19,11 @@ interface TestDetail {
   activo: boolean;
   created_at: string;
   config_ia?: any;
+  objetivo?: string;
+  poblacion?: string;
+  metodo_aplicacion?: string;
+  tiempo_estimado?: string;
+  tipo_respuesta?: string;
 }
 
 interface TestDetailDialogProps {
@@ -30,8 +35,6 @@ interface TestDetailDialogProps {
 
 const TestDetailDialog = ({ test, questions, open, onOpenChange }: TestDetailDialogProps) => {
   if (!test) return null;
-
-  const config = test.config_ia || {};
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -61,7 +64,7 @@ const TestDetailDialog = ({ test, questions, open, onOpenChange }: TestDetailDia
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Objetivos</p>
                   <p className="text-sm font-semibold text-foreground">
-                    {config.objetivos || 'Evaluación psicológica general'}
+                    {test.objetivo || 'Evaluación psicológica general'}
                   </p>
                 </div>
               </div>
@@ -73,7 +76,7 @@ const TestDetailDialog = ({ test, questions, open, onOpenChange }: TestDetailDia
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Población</p>
                   <p className="text-sm font-semibold text-foreground">
-                    {config.poblacion || 'Todas las edades'}
+                    {test.poblacion || 'Todas las edades'}
                   </p>
                 </div>
               </div>
@@ -85,7 +88,7 @@ const TestDetailDialog = ({ test, questions, open, onOpenChange }: TestDetailDia
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Método</p>
                   <p className="text-sm font-semibold text-foreground">
-                    {config.metodo || 'Autoevaluación'}
+                    {test.metodo_aplicacion || 'Autoevaluación'}
                   </p>
                 </div>
               </div>
@@ -97,7 +100,7 @@ const TestDetailDialog = ({ test, questions, open, onOpenChange }: TestDetailDia
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Tiempo estimado</p>
                   <p className="text-sm font-semibold text-foreground">
-                    {config.tiempo || '10-15 min'}
+                    {test.tiempo_estimado || '10-15 min'}
                   </p>
                 </div>
               </div>
@@ -111,7 +114,7 @@ const TestDetailDialog = ({ test, questions, open, onOpenChange }: TestDetailDia
               <div>
                 <p className="text-xs text-muted-foreground font-medium">Tipo de respuesta</p>
                 <p className="text-sm font-semibold text-foreground">
-                  {config.tipo_respuesta || 'Escala Likert (1-5)'}
+                  {test.tipo_respuesta || 'Escala Likert (1-5)'}
                 </p>
               </div>
             </div>
