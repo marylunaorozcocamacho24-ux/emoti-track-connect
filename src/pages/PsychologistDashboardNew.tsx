@@ -14,9 +14,18 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Search, Edit2, Trash2, Eye } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, Eye, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Patient {
   id: string;
@@ -31,35 +40,10 @@ interface Patient {
 const PsychologistDashboardNew = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [patients, setPatients] = useState<Patient[]>([
-    {
-      id: '1',
-      nombre: 'Laura Gómez',
-      edad: 25,
-      email: 'laura.gomez@email.com',
-      lastSession: '02/10/25',
-      emotionalState: 'Ansiosa',
-      notes: 'Presenta síntomas de ansiedad moderada'
-    },
-    {
-      id: '2',
-      nombre: 'Mateo Ruiz',
-      edad: 30,
-      email: 'mateo.ruiz@email.com',
-      lastSession: '07/10/25',
-      emotionalState: 'Tranquilo',
-      notes: 'Muestra progreso significativo'
-    },
-    {
-      id: '3',
-      nombre: 'Camila López',
-      edad: 19,
-      email: 'camila.lopez@email.com',
-      lastSession: '09/10/25',
-      emotionalState: 'Triste',
-      notes: 'Requiere seguimiento cercano'
-    }
-  ]);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [accessCode, setAccessCode] = useState<string>("");
+  const [showCodeDialog, setShowCodeDialog] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedPatient, setEditedPatient] = useState<Patient | null>(null);
@@ -98,6 +82,94 @@ const PsychologistDashboardNew = () => {
     p.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const getEmotionFromScore = (score: number, testType: string) => {
+    if (testType === 'PHQ-2' || testType === 'GAD-2') {
+      if (score >= 3) return { text: 'Ansioso', color: 'bg-emotion-anxious text-white' };
+      if (score >= 2) return { text: 'Moderado', color: 'bg-emotion-sad text-white' };
+      return { text: 'Tranquilo', color: 'bg-emotion-calm text-white' };
+    }
+    if (testType === 'PANAS-P') {
+      if (score >= 35) return { text: 'Feliz', color: 'bg-emotion-happy text-white' };
+      if (score >= 25) return { text: 'Estable', color: 'bg-emotion-calm text-white' };
+      return { text: 'Bajo ánimo', color: 'bg-emotion-sad text-white' };
+    }
+    return { text: 'Normal', color: 'bg-muted text-foreground' };
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        // Fetch patients for authenticated psychologist
+        const { data: patientsData, error: patientsError } = await supabase
+          .rpc('get_psychologist_patients');
+        if (patientsError) throw patientsError;
+
+        // For each patient, get latest evaluation and a placeholder lastSession (from notas fecha if exists)
+        const withDetails: Patient[] = await Promise.all(
+          (patientsData || []).map(async (p: any) => {
+            const [{ data: evalData }, { data: noteData }] = await Promise.all([
+              supabase
+                .from('evaluaciones')
+                .select('tipo_prueba, resultado_numerico, fecha')
+                .eq('paciente_id', p.id)
+                .order('fecha', { ascending: false })
+                .limit(1)
+                .maybeSingle(),
+              supabase
+                .from('notas')
+                .select('fecha')
+                .eq('paciente_id', p.id)
+                .order('fecha', { ascending: false })
+                .limit(1)
+                .maybeSingle(),
+            ]);
+
+            let emotionalState: string | undefined;
+            if (evalData) {
+              emotionalState = getEmotionFromScore(
+                evalData.resultado_numerico,
+                evalData.tipo_prueba
+              ).text;
+            }
+
+            return {
+              id: p.id,
+              nombre: p.nombre,
+              edad: p.edad,
+              email: '',
+              lastSession: noteData?.fecha
+                ? new Date(noteData.fecha).toLocaleDateString('es-ES')
+                : undefined,
+              emotionalState,
+              notes: '',
+            } as Patient;
+          })
+        );
+
+        setPatients(withDetails);
+
+        // Load psychologist access code to display/share
+        const { data: user } = await supabase.auth.getUser();
+        if (user.user) {
+          const { data: profile, error: profileError } = await supabase
+            .from('users')
+            .select('codigo_psicologo')
+            .eq('id', user.user.id)
+            .maybeSingle();
+          if (!profileError && profile?.codigo_psicologo) {
+            setAccessCode(profile.codigo_psicologo);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
   const handleEdit = (patient: Patient) => {
     setEditingId(patient.id);
     setEditedPatient({ ...patient });
@@ -126,18 +198,21 @@ const PsychologistDashboardNew = () => {
   };
 
   const handleAddPatient = () => {
-    const newPatient: Patient = {
-      id: Date.now().toString(),
-      nombre: 'Nuevo Paciente',
-      edad: 0,
-      email: '',
-      lastSession: new Date().toLocaleDateString('es-ES'),
-      emotionalState: 'Normal',
-      notes: ''
-    };
-    setPatients([...patients, newPatient]);
-    setEditingId(newPatient.id);
-    setEditedPatient(newPatient);
+    // Instead of creating a patient record (requires auth account), show the access code to share
+    if (accessCode) {
+      setShowCodeDialog(true);
+    } else {
+      toast({ title: 'Código no disponible', description: 'No encontramos tu código. Intenta recargar.' });
+    }
+  };
+
+  const copyAccessCode = async () => {
+    try {
+      await navigator.clipboard.writeText(accessCode);
+      toast({ title: 'Código copiado', description: 'Pega el código para compartirlo con tu paciente.' });
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
@@ -186,7 +261,7 @@ const PsychologistDashboardNew = () => {
             </Card>
 
             {/* Patients table */}
-            <Card className="p-6">
+              <Card className="p-6">
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -200,7 +275,19 @@ const PsychologistDashboardNew = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredPatients.map((patient) => (
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                          Cargando pacientes...
+                        </TableCell>
+                      </TableRow>
+                    ) : filteredPatients.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                          No hay pacientes registrados
+                        </TableCell>
+                      </TableRow>
+                    ) : filteredPatients.map((patient) => (
                       <TableRow key={patient.id} className="hover:bg-muted/5">
                         <TableCell>
                           {editingId === patient.id ? (
@@ -222,7 +309,7 @@ const PsychologistDashboardNew = () => {
                               className="h-9 w-20"
                             />
                           ) : (
-                            <div>{patient.edad} años</div>
+                            <div>{patient.edad ? `${patient.edad} años` : '-'}</div>
                           )}
                         </TableCell>
                         <TableCell>
@@ -233,7 +320,7 @@ const PsychologistDashboardNew = () => {
                               className="h-9"
                             />
                           ) : (
-                            <div className="text-muted-foreground">{patient.lastSession}</div>
+                            <div className="text-muted-foreground">{patient.lastSession || '—'}</div>
                           )}
                         </TableCell>
                         <TableCell>
@@ -323,6 +410,32 @@ const PsychologistDashboardNew = () => {
           </div>
         </main>
       </div>
+
+      {/* Share access code dialog */}
+      <Dialog open={showCodeDialog} onOpenChange={setShowCodeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Comparte tu código con el paciente</DialogTitle>
+            <DialogDescription>
+              El paciente deberá ingresar este código durante su registro para vincularse contigo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center justify-between rounded-xl border p-3">
+            <div>
+              <div className="text-xs text-muted-foreground">Código de acceso</div>
+              <div className="text-2xl font-bold tracking-widest">{accessCode}</div>
+            </div>
+            <Button variant="outline" onClick={copyAccessCode} className="gap-2">
+              <Copy className="w-4 h-4" /> Copiar
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => navigate('/registro-paciente')} className="rounded-xl">
+              Ir a registro de paciente
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 };
