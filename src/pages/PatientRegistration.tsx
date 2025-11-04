@@ -46,8 +46,7 @@ const PatientRegistration = () => {
       const validatedData = patientSchema.parse(formData);
 
       // Validate psychologist access code using a secure RPC function
-      const { data: codeValidData, error: codeValidError } = await supabase
-        .rpc('is_valid_psychologist_code', { _code: validatedData.accessCode });
+      const { data: codeValidData, error: codeValidError } = await (supabase.rpc as any)('is_valid_psychologist_code', { _code: validatedData.accessCode });
       if (codeValidError) {
         throw new Error('No se pudo validar el código del psicólogo. Intenta más tarde.');
       }
@@ -71,8 +70,7 @@ const PatientRegistration = () => {
       if (!authData.user) throw new Error("No se pudo crear el usuario");
 
       // Server-side link: updates current user's record inside a SECURITY DEFINER function
-      const { data: linkOk, error: linkError } = await supabase
-        .rpc('link_patient_to_psychologist', { _code: validatedData.accessCode, _age: parseInt(validatedData.age) });
+      const { data: linkOk, error: linkError } = await (supabase.rpc as any)('link_patient_to_psychologist', { _code: validatedData.accessCode, _age: parseInt(validatedData.age) });
       if (linkError) throw new Error('Error al vincular el código. Intenta nuevamente.');
       if (!linkOk) throw new Error('El código no es válido o no se pudo vincular.');
 
