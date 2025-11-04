@@ -45,6 +45,16 @@ const PatientRegistration = () => {
     try {
       const validatedData = patientSchema.parse(formData);
 
+      // Validate psychologist access code using a secure RPC function
+      const { data: codeValidData, error: codeValidError } = await supabase
+        .rpc('is_valid_psychologist_code', { _code: validatedData.accessCode });
+      if (codeValidError) {
+        throw new Error('No se pudo validar el código del psicólogo. Intenta más tarde.');
+      }
+      if (!codeValidData) {
+        throw new Error('El código de acceso no es válido. Verifica con tu psicólogo/a.');
+      }
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: validatedData.email,
         password: validatedData.password,

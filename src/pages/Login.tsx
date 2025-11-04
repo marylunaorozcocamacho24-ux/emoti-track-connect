@@ -12,8 +12,7 @@ import { Brain, Heart, Shield } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'select' | 'login'>('select');
-  const [userType, setUserType] = useState<'paciente' | 'psicologo' | 'administrador' | null>(null);
+  // Single login: no need to select user type
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -42,11 +41,6 @@ const Login = () => {
     checkSession();
   }, []); // Only run once on mount
 
-  const handleSelectType = (type: 'paciente' | 'psicologo' | 'administrador') => {
-    setUserType(type);
-    setMode('login');
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -67,29 +61,27 @@ const Login = () => {
         return;
       }
 
-      // Verify user has correct role
-      const { data: roleData } = await supabase
+      // Fetch role and route automatically (priority: admin > psicologo > paciente)
+      const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', data.user.id)
-        .eq('role', userType)
-        .maybeSingle();
+        .eq('user_id', data.user.id);
 
-      if (!roleData) {
+      if (rolesError) throw rolesError;
+
+      const roleList = (roles || []).map(r => r.role);
+      let destination: string | null = null;
+      if (roleList.includes('administrador')) destination = '/admin';
+      else if (roleList.includes('psicologo')) destination = '/psicologo';
+      else if (roleList.includes('paciente')) destination = '/paciente';
+
+      if (!destination) {
         await supabase.auth.signOut();
-        throw new Error("No tienes acceso con este tipo de usuario. Por favor verifica que te hayas registrado correctamente.");
+        throw new Error('Tu cuenta no tiene un rol asignado. Contacta al administrador.');
       }
 
       toast.success("¡Inicio de sesión exitoso!");
-      
-      // Use replace to avoid history issues
-      if (userType === 'paciente') {
-        navigate('/paciente', { replace: true });
-      } else if (userType === 'psicologo') {
-        navigate('/psicologo', { replace: true });
-      } else if (userType === 'administrador') {
-        navigate('/admin', { replace: true });
-      }
+      navigate(destination, { replace: true });
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -99,13 +91,8 @@ const Login = () => {
     }
   };
 
-  const handleRegister = () => {
-    if (userType === 'paciente') {
-      navigate('/registro-paciente');
-    } else {
-      navigate('/registro-psicologo');
-    }
-  };
+  const handleRegisterPatient = () => navigate('/registro-paciente');
+  const handleRegisterPsych = () => navigate('/registro-psicologo');
 
   const floatingEmojis = ['🌸', '🌼', '💙', '💜', '✨', '🦋', '🌈', '💗'];
   
@@ -172,117 +159,79 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Login/Select mode */}
+        {/* Single Login Card */}
         <Card className="p-8 backdrop-blur-xl bg-card/80 border-2 border-border/50 shadow-2xl animate-fade-in rounded-3xl" style={{ animationDelay: '0.4s' }}>
-          {mode === 'select' ? (
-            <div className="space-y-4">
-              <Button
-                onClick={() => handleSelectType('administrador')}
-                className="w-full h-16 text-base font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white border-0"
-                size="lg"
-              >
-                <Shield className="w-6 h-6 mr-3" />
-                Administrador
-              </Button>
-
-              <Button
-                onClick={() => handleSelectType('psicologo')}
-                className="w-full h-16 text-base font-semibold rounded-2xl gradient-button border-0"
-                size="lg"
-              >
-                <Heart className="w-6 h-6 mr-3" />
-                Psicólogo/a
-              </Button>
-              
-              <Button
-                onClick={() => handleSelectType('paciente')}
-                className="w-full h-16 text-base font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-secondary hover:bg-secondary/90 text-secondary-foreground border-0"
-                size="lg"
-              >
-                <Brain className="w-6 h-6 mr-3" />
-                Paciente
-              </Button>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="text-center mb-2">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-3">
+                <Shield className="w-5 h-5 text-purple-500" />
+                <Heart className="w-5 h-5 text-primary" />
+                <Brain className="w-5 h-5 text-secondary" />
+                <span className="text-sm font-semibold text-foreground">Inicio de sesión</span>
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">Ingresa a tu cuenta</h2>
+              <p className="text-sm text-muted-foreground">El sistema te llevará a tu panel según tu rol</p>
             </div>
-          ) : (
-            <form onSubmit={handleLogin} className="space-y-6">
+
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email" className="text-foreground font-medium">Correo electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
+                  placeholder="tu@email.com"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="password" className="text-foreground font-medium">Contraseña</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
+                  placeholder="••••••••"
+                />
+              </div>
+
               <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setMode('select')}
-                className="mb-2 text-muted-foreground hover:text-primary"
+                type="submit"
+                className="w-full h-12 gradient-button mt-6 border-0"
+                disabled={loading}
               >
-                ← Volver
+                {loading ? "Iniciando sesión..." : "Continuar"}
               </Button>
 
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-3">
-                  {userType === 'paciente' && <Brain className="w-5 h-5 text-secondary" />}
-                  {userType === 'psicologo' && <Heart className="w-5 h-5 text-primary" />}
-                  {userType === 'administrador' && <Shield className="w-5 h-5 text-purple-500" />}
-                  <span className="text-sm font-semibold text-foreground">
-                    {userType === 'paciente' 
-                      ? 'Paciente' 
-                      : userType === 'psicologo'
-                      ? 'Psicólogo/a'
-                      : 'Administrador'}
-                  </span>
-                </div>
-                <h2 className="text-2xl font-bold text-foreground">
-                  Iniciar Sesión
-                </h2>
+              <div className="text-center pt-4 space-y-1">
+                <p className="text-sm text-muted-foreground">
+                  ¿Eres paciente?{' '}
+                  <button
+                    type="button"
+                    onClick={handleRegisterPatient}
+                    className="text-primary hover:underline font-semibold"
+                  >
+                    Regístrate aquí
+                  </button>
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  ¿Eres psicólogo/a?{' '}
+                  <button
+                    type="button"
+                    onClick={handleRegisterPsych}
+                    className="text-primary hover:underline font-semibold"
+                  >
+                    Crea tu perfil
+                  </button>
+                </p>
               </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="email" className="text-foreground font-medium">Correo electrónico</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
-                    placeholder="tu@email.com"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="password" className="text-foreground font-medium">Contraseña</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
-                    placeholder="••••••••"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full h-12 gradient-button mt-6 border-0"
-                  disabled={loading}
-                >
-                  {loading ? "Iniciando sesión..." : "Continuar"}
-                </Button>
-
-                <div className="text-center pt-4">
-                  <p className="text-sm text-muted-foreground">
-                    ¿No tienes cuenta?{' '}
-                    <button
-                      type="button"
-                      onClick={handleRegister}
-                      className="text-primary hover:underline font-semibold"
-                    >
-                      Regístrate aquí
-                    </button>
-                  </p>
-                </div>
-              </div>
-            </form>
-          )}
+            </div>
+          </form>
         </Card>
 
         {/* Footer text */}
