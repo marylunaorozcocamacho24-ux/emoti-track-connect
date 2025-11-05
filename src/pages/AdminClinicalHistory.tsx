@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Plus, Edit, Trash2, FileText, Eye, BookOpen } from "lucide-react";
+import { SeedClinicalHistoryButton } from "@/components/SeedClinicalHistoryButton";
+import { CreateEditClinicalHistoryDialog } from "@/components/CreateEditClinicalHistoryDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,6 +45,8 @@ const AdminClinicalHistory = () => {
   const [templateToDelete, setTemplateToDelete] = useState<ClinicalHistoryTemplate | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<ClinicalHistoryTemplate | null>(null);
+  const [createEditDialogOpen, setCreateEditDialogOpen] = useState(false);
+  const [templateToEdit, setTemplateToEdit] = useState<ClinicalHistoryTemplate | null>(null);
 
   useEffect(() => {
     fetchTemplates();
@@ -129,6 +133,16 @@ const AdminClinicalHistory = () => {
     setDetailDialogOpen(true);
   };
 
+  const handleEdit = (template: ClinicalHistoryTemplate) => {
+    setTemplateToEdit(template);
+    setCreateEditDialogOpen(true);
+  };
+
+  const handleCreateNew = () => {
+    setTemplateToEdit(null);
+    setCreateEditDialogOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -177,9 +191,12 @@ const AdminClinicalHistory = () => {
               Gestiona las plantillas de historias clínicas del sistema
             </p>
           </div>
-          <Badge variant="secondary" className="text-lg px-4 py-2">
-            {templates.length} plantilla{templates.length !== 1 ? 's' : ''}
-          </Badge>
+          <div className="flex items-center gap-3">
+            <SeedClinicalHistoryButton onSuccess={fetchTemplates} />
+            <Badge variant="secondary" className="text-lg px-4 py-2">
+              {templates.length} plantilla{templates.length !== 1 ? 's' : ''}
+            </Badge>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -242,6 +259,15 @@ const AdminClinicalHistory = () => {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => handleEdit(template)}
+                        className="hover:bg-accent/10 hover:border-accent/50"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleToggleActive(template)}
                         className="hover:bg-secondary/10 hover:border-secondary/50"
                       >
@@ -269,11 +295,20 @@ const AdminClinicalHistory = () => {
 
       {/* Floating Action Button */}
       <Button
+        onClick={handleCreateNew}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl gradient-button border-0 hover:scale-110 transition-transform z-50"
         size="icon"
       >
         <Plus className="w-6 h-6" />
       </Button>
+
+      {/* Create/Edit Dialog */}
+      <CreateEditClinicalHistoryDialog
+        open={createEditDialogOpen}
+        onOpenChange={setCreateEditDialogOpen}
+        template={templateToEdit}
+        onSuccess={fetchTemplates}
+      />
 
       {/* Detail Dialog */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
