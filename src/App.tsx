@@ -33,6 +33,7 @@ import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminTests from "./pages/AdminTests";
+import AdminClinicalHistory from "./pages/AdminClinicalHistory";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ const App = () => (
           <Route path="/admin" element={<ProtectedRoute requiredRole="administrador"><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/usuarios" element={<ProtectedRoute requiredRole="administrador"><AdminUsers /></ProtectedRoute>} />
           <Route path="/admin/tests" element={<ProtectedRoute requiredRole="administrador"><AdminTests /></ProtectedRoute>} />
+          <Route path="/admin/historias-clinicas" element={<ProtectedRoute requiredRole="administrador"><AdminClinicalHistory /></ProtectedRoute>} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

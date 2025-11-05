@@ -167,6 +167,39 @@ export type Database = {
           },
         ]
       }
+      plantillas_historia_clinica: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          descripcion: string | null
+          enfoque_terapeutico: string | null
+          estructura: Json
+          id: string
+          nombre: string
+          updated_at: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          enfoque_terapeutico?: string | null
+          estructura?: Json
+          id?: string
+          nombre: string
+          updated_at?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          enfoque_terapeutico?: string | null
+          estructura?: Json
+          id?: string
+          nombre?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       preguntas_test: {
         Row: {
           created_at: string | null

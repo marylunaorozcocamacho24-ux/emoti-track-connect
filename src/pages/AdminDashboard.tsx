@@ -197,6 +197,20 @@ const AdminDashboard = () => {
               <p className="text-xs text-muted-foreground mt-1">Ver, crear y administrar tests psicológicos del sistema</p>
             </div>
           </Button>
+
+          <Button
+            onClick={() => navigate('/admin/historias-clinicas')}
+            className="w-full justify-start h-auto p-5 bg-gradient-to-r from-card to-card/50 hover:from-accent/10 hover:to-accent/5 border-2 hover:border-accent/30 transition-all duration-300"
+            variant="outline"
+          >
+            <div className="p-2 bg-accent/10 rounded-xl mr-4">
+              <ClipboardList className="w-6 h-6 text-accent" />
+            </div>
+            <div className="text-left">
+              <p className="font-bold text-base text-foreground">Gestión de Historias Clínicas</p>
+              <p className="text-xs text-muted-foreground mt-1">Administrar plantillas de historias clínicas para psicólogos</p>
+            </div>
+          </Button>
         </div>
       </div>
     </div>
