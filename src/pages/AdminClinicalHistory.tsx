@@ -25,6 +25,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface ClinicalHistoryTemplate {
   id: string;
@@ -192,10 +198,17 @@ const AdminClinicalHistory = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <SeedClinicalHistoryButton onSuccess={fetchTemplates} />
             <Badge variant="secondary" className="text-lg px-4 py-2">
               {templates.length} plantilla{templates.length !== 1 ? 's' : ''}
             </Badge>
+            <SeedClinicalHistoryButton onSuccess={fetchTemplates} />
+            <Button
+              onClick={handleCreateNew}
+              className="gradient-button border-0"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nueva Plantilla
+            </Button>
           </div>
         </div>
 
@@ -293,14 +306,6 @@ const AdminClinicalHistory = () => {
         </div>
       </div>
 
-      {/* Floating Action Button */}
-      <Button
-        onClick={handleCreateNew}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl gradient-button border-0 hover:scale-110 transition-transform z-50"
-        size="icon"
-      >
-        <Plus className="w-6 h-6" />
-      </Button>
 
       {/* Create/Edit Dialog */}
       <CreateEditClinicalHistoryDialog
@@ -349,18 +354,42 @@ const AdminClinicalHistory = () => {
                 <p className="text-sm font-semibold text-muted-foreground mb-2">Estructura de la Plantilla</p>
                 <Card className="p-4 bg-muted/30">
                   {selectedTemplate.estructura && selectedTemplate.estructura.length > 0 ? (
-                    <div className="space-y-2">
+                    <Accordion type="single" collapsible className="w-full">
                       {selectedTemplate.estructura.map((section: any, index: number) => (
-                        <div key={index} className="p-3 bg-background rounded-lg border">
-                          <p className="font-semibold text-sm">{section.titulo || `Sección ${index + 1}`}</p>
-                          {section.campos && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {section.campos.length} campo(s)
-                            </p>
-                          )}
-                        </div>
+                        <AccordionItem key={index} value={`section-${index}`} className="border-border">
+                          <AccordionTrigger className="hover:no-underline">
+                            <div className="flex items-center justify-between w-full pr-4">
+                              <p className="font-semibold text-sm text-foreground">
+                                {section.titulo || `Sección ${index + 1}`}
+                              </p>
+                              <Badge variant="secondary" className="text-xs">
+                                {section.campos?.length || 0} campo{section.campos?.length !== 1 ? 's' : ''}
+                              </Badge>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="space-y-2 pt-2 pl-4">
+                              {section.campos && section.campos.length > 0 ? (
+                                section.campos.map((campo: any, campoIndex: number) => (
+                                  <div key={campoIndex} className="flex items-center gap-2 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                                    <span className="text-foreground/80">{campo.nombre}</span>
+                                    <Badge variant="outline" className="text-xs ml-auto">
+                                      {campo.tipo || 'texto'}
+                                    </Badge>
+                                    {campo.requerido && (
+                                      <span className="text-xs text-destructive">*</span>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="text-xs text-muted-foreground italic">Sin campos definidos</p>
+                              )}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
                       ))}
-                    </div>
+                    </Accordion>
                   ) : (
                     <p className="text-sm text-muted-foreground italic">Sin estructura definida</p>
                   )}
