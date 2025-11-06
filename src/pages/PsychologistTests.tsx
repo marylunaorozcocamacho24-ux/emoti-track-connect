@@ -24,6 +24,28 @@ const PsychologistTests = () => {
 
   useEffect(() => {
     fetchTests();
+
+    // Set up realtime subscription for tests
+    const channel = supabase
+      .channel('tests-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tests_psicologicos'
+        },
+        (payload) => {
+          console.log('Test change detected:', payload);
+          // Refetch tests when any change occurs
+          fetchTests();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchTests = async () => {

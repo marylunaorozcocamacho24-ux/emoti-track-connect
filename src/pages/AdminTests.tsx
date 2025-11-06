@@ -41,6 +41,28 @@ const AdminTests = () => {
 
   useEffect(() => {
     fetchTests();
+
+    // Set up realtime subscription for tests
+    const channel = supabase
+      .channel('admin-tests-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tests_psicologicos'
+        },
+        (payload) => {
+          console.log('Admin test change detected:', payload);
+          // Refetch tests when any change occurs
+          fetchTests();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchTests = async () => {

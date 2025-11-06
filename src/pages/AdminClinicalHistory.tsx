@@ -56,6 +56,28 @@ const AdminClinicalHistory = () => {
 
   useEffect(() => {
     fetchTemplates();
+
+    // Set up realtime subscription for templates
+    const channel = supabase
+      .channel('admin-templates-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'plantillas_historia_clinica'
+        },
+        (payload) => {
+          console.log('Admin template change detected:', payload);
+          // Refetch templates when any change occurs
+          fetchTemplates();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchTemplates = async () => {
