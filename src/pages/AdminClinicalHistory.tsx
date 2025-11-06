@@ -184,6 +184,16 @@ const AdminClinicalHistory = () => {
                 <p className="text-sm opacity-90">Plantillas de historias clínicas disponibles para psicólogos</p>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              <SeedClinicalHistoryButton onSuccess={fetchTemplates} />
+              <Button
+                onClick={handleCreateNew}
+                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm transition-all"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nueva Plantilla
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -197,19 +207,9 @@ const AdminClinicalHistory = () => {
               Gestiona las plantillas de historias clínicas del sistema
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="text-lg px-4 py-2">
-              {templates.length} plantilla{templates.length !== 1 ? 's' : ''}
-            </Badge>
-            <SeedClinicalHistoryButton onSuccess={fetchTemplates} />
-            <Button
-              onClick={handleCreateNew}
-              className="gradient-button border-0"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Nueva Plantilla
-            </Button>
-          </div>
+          <Badge variant="secondary" className="text-lg px-4 py-2">
+            {templates.length} plantilla{templates.length !== 1 ? 's' : ''}
+          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
