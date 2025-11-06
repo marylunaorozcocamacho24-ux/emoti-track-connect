@@ -184,11 +184,11 @@ const AdminClinicalHistory = () => {
                 <p className="text-sm opacity-90">Plantillas de historias clínicas disponibles para psicólogos</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex gap-2">
               <SeedClinicalHistoryButton onSuccess={fetchTemplates} />
               <Button
                 onClick={handleCreateNew}
-                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm transition-all"
+                className="gradient-button border-0 shadow-lg hover:scale-105 transition-transform"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Nueva Plantilla
