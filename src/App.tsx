@@ -34,6 +34,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminTests from "./pages/AdminTests";
 import AdminClinicalHistory from "./pages/AdminClinicalHistory";
+import AdminPsychologists from "./pages/AdminPsychologists";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ const App = () => (
           {/* Protected Administrator Routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole="administrador"><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/usuarios" element={<ProtectedRoute requiredRole="administrador"><AdminUsers /></ProtectedRoute>} />
+          <Route path="/admin/psicologos" element={<ProtectedRoute requiredRole="administrador"><AdminPsychologists /></ProtectedRoute>} />
           <Route path="/admin/tests" element={<ProtectedRoute requiredRole="administrador"><AdminTests /></ProtectedRoute>} />
           <Route path="/admin/historias-clinicas" element={<ProtectedRoute requiredRole="administrador"><AdminClinicalHistory /></ProtectedRoute>} />
           

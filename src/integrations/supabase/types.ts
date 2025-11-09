@@ -167,6 +167,89 @@ export type Database = {
           },
         ]
       }
+      pagos_psicologo: {
+        Row: {
+          aprobado_por: string | null
+          comprobante_url: string | null
+          created_at: string | null
+          estado: string
+          fecha_aprobacion: string | null
+          fecha_pago: string | null
+          id: string
+          metodo_pago: string | null
+          monto: number
+          notas: string | null
+          psicologo_id: string
+          suscripcion_id: string | null
+        }
+        Insert: {
+          aprobado_por?: string | null
+          comprobante_url?: string | null
+          created_at?: string | null
+          estado?: string
+          fecha_aprobacion?: string | null
+          fecha_pago?: string | null
+          id?: string
+          metodo_pago?: string | null
+          monto: number
+          notas?: string | null
+          psicologo_id: string
+          suscripcion_id?: string | null
+        }
+        Update: {
+          aprobado_por?: string | null
+          comprobante_url?: string | null
+          created_at?: string | null
+          estado?: string
+          fecha_aprobacion?: string | null
+          fecha_pago?: string | null
+          id?: string
+          metodo_pago?: string | null
+          monto?: number
+          notas?: string | null
+          psicologo_id?: string
+          suscripcion_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagos_psicologo_suscripcion_id_fkey"
+            columns: ["suscripcion_id"]
+            isOneToOne: false
+            referencedRelation: "suscripciones_psicologo"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planes_suscripcion: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          descripcion: string | null
+          duracion_dias: number
+          id: string
+          nombre: string
+          precio: number
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          duracion_dias?: number
+          id?: string
+          nombre: string
+          precio: number
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          duracion_dias?: number
+          id?: string
+          nombre?: string
+          precio?: number
+        }
+        Relationships: []
+      }
       plantillas_historia_clinica: {
         Row: {
           activo: boolean | null
@@ -329,6 +412,47 @@ export type Database = {
           },
         ]
       }
+      suscripciones_psicologo: {
+        Row: {
+          created_at: string | null
+          estado: string
+          fecha_inicio: string | null
+          fecha_vencimiento: string | null
+          id: string
+          plan_id: string | null
+          psicologo_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          estado?: string
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          plan_id?: string | null
+          psicologo_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          estado?: string
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          plan_id?: string | null
+          psicologo_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suscripciones_psicologo_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "planes_suscripcion"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tests_psicologicos: {
         Row: {
           activo: boolean | null
@@ -402,6 +526,7 @@ export type Database = {
         Row: {
           codigo_psicologo: string | null
           created_at: string | null
+          cuenta_activa: boolean | null
           diagnostico: string | null
           edad: number | null
           email: string
@@ -417,6 +542,7 @@ export type Database = {
         Insert: {
           codigo_psicologo?: string | null
           created_at?: string | null
+          cuenta_activa?: boolean | null
           diagnostico?: string | null
           edad?: number | null
           email: string
@@ -432,6 +558,7 @@ export type Database = {
         Update: {
           codigo_psicologo?: string | null
           created_at?: string | null
+          cuenta_activa?: boolean | null
           diagnostico?: string | null
           edad?: number | null
           email?: string
@@ -461,6 +588,10 @@ export type Database = {
       }
     }
     Functions: {
+      aprobar_pago_y_renovar_suscripcion: {
+        Args: { _admin_id: string; _pago_id: string }
+        Returns: boolean
+      }
       get_psychologist_patients: {
         Args: never
         Returns: {

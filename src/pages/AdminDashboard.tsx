@@ -185,6 +185,20 @@ const AdminDashboard = () => {
           </Button>
 
           <Button
+            onClick={() => navigate('/admin/psicologos')}
+            className="w-full justify-start h-auto p-5 bg-gradient-to-r from-card to-card/50 hover:from-secondary/10 hover:to-secondary/5 border-2 hover:border-secondary/30 transition-all duration-300"
+            variant="outline"
+          >
+            <div className="p-2 bg-secondary/10 rounded-xl mr-4">
+              <Users className="w-6 h-6 text-secondary" />
+            </div>
+            <div className="text-left">
+              <p className="font-bold text-base text-foreground">Gestionar Psicólogos</p>
+              <p className="text-xs text-muted-foreground mt-1">Administrar cuentas, suscripciones y pagos de profesionales</p>
+            </div>
+          </Button>
+
+          <Button
             onClick={() => navigate('/admin/tests')}
             className="w-full justify-start h-auto p-5 bg-gradient-to-r from-card to-card/50 hover:from-secondary/10 hover:to-secondary/5 border-2 hover:border-secondary/30 transition-all duration-300"
             variant="outline"
