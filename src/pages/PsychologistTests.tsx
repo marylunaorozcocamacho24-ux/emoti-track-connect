@@ -59,7 +59,8 @@ const PsychologistTests = () => {
       const { data, error } = await supabase
         .from('tests_psicologicos')
         .select('*')
-        .eq('psicologo_id', user.id)
+        .or(`psicologo_id.eq.${user.id},psicologo_id.is.null`)
+        .eq('activo', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
