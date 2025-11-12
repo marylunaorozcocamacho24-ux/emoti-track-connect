@@ -11,6 +11,7 @@ import brainCharacter from "@/assets/brain-character.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import PsychologistSelectorDialog from "@/components/PsychologistSelectorDialog";
 
 const patientSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -36,6 +37,13 @@ const PatientRegistration = () => {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const [selectedPsychologist, setSelectedPsychologist] = useState<{
+    id: string;
+    nombre: string;
+    especialidad?: string | null;
+    codigo_psicologo?: string | null;
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,6 +144,7 @@ const PatientRegistration = () => {
           
           <h1 className="text-3xl font-bold text-foreground">Crea tu cuenta</h1>
           <p className="text-muted-foreground text-sm">Completa tu perfil para comenzar tu viaje emocional</p>
+          <div className="mt-2 inline-block bg-rose-100 text-rose-800 text-sm px-3 py-1 rounded-full">DEV: Selector de psicólogo activo</div>
         </div>
 
         {/* Registration Form */}
@@ -196,17 +205,35 @@ const PatientRegistration = () => {
             </div>
 
             <div>
-              <Label htmlFor="accessCode" className="text-foreground font-medium">Código de acceso del psicólogo *</Label>
-              <Input
-                id="accessCode"
-                value={formData.accessCode}
-                onChange={(e) => handleInputChange('accessCode', e.target.value)}
-                className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-secondary/50"
-                placeholder="PSI-ABC123"
-                required
-              />
-              <p className="text-xs text-muted-foreground mt-1">Este código te lo proporciona tu psicólogo/a</p>
+              <Label className="text-foreground font-medium">Psicólogo/a asignado *</Label>
+              <div className="mt-2 flex items-center gap-3">
+                <Button onClick={() => setSelectorOpen(true)} className="h-12">Seleccionar psicólogo</Button>
+                {selectedPsychologist ? (
+                  <div>
+                    <p className="font-medium">{selectedPsychologist.nombre}</p>
+                    <p className="text-sm text-muted-foreground">{selectedPsychologist.especialidad}</p>
+                    {selectedPsychologist.codigo_psicologo && (
+                      <p className="text-xs text-muted-foreground">Código: {selectedPsychologist.codigo_psicologo}</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No has seleccionado un psicólogo/a</p>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Selecciona a tu psicólogo/a desde la lista</p>
             </div>
+
+            <PsychologistSelectorDialog
+              open={selectorOpen}
+              onOpenChange={(v) => setSelectorOpen(v)}
+              onSelect={(p) => {
+                setSelectedPsychologist(p as any);
+                // store the code so existing RPCs keep working
+                if (p.codigo_psicologo) {
+                  setFormData(prev => ({ ...prev, accessCode: p.codigo_psicologo || '' }));
+                }
+              }}
+            />
 
             <div>
               <Label htmlFor="personalNotes" className="text-foreground font-medium">Notas personales (opcional)</Label>
