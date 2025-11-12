@@ -10,6 +10,7 @@ import brainCharacter from "@/assets/brain-character.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { generatePsychologistCode } from "@/lib/utils";
 
 const psychologistSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -43,8 +44,17 @@ const PsychologistRegistration = () => {
     try {
       const validatedData = psychologistSchema.parse(formData);
 
-      // In this flow we do not generate or expose a psychologist access code here.
-      // Codes are no longer required for registration.
+      // Generate a unique code PSI-##### (retry a few times if collision)
+      let psychologistCode = generatePsychologistCode();
+      for (let i = 0; i < 5; i++) {
+        const { count, error: countError } = await supabase
+          .from('users')
+          .select('id', { count: 'exact', head: true })
+          .eq('codigo_psicologo', psychologistCode);
+        if (countError) break; // If we cannot count, proceed and rely on DB unique index
+        if ((count || 0) === 0) break; // unique
+        psychologistCode = generatePsychologistCode();
+      }
 
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: validatedData.email,
@@ -66,7 +76,8 @@ const PsychologistRegistration = () => {
         .update({
           especialidad: validatedData.specialty,
           numero_licencia: validatedData.licenseNumber,
-          institucion: validatedData.institution || null
+          institucion: validatedData.institution || null,
+          codigo_psicologo: psychologistCode
         })
         .eq('id', authData.user.id);
 
