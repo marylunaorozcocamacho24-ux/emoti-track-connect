@@ -72,12 +72,11 @@ const PatientRegistration = () => {
 
       console.debug('signUp data:', authData);
 
-      // Update user's profile with age so patient can later select a psychologist
-      const { error: updateError } = await supabase
+      // Ensure user's profile exists and update age (use upsert to insert if missing)
+      const { error: upsertError } = await supabase
         .from('users')
-        .update({ edad: parseInt(validatedData.age) })
-        .eq('id', authData.user.id);
-      if (updateError) throw updateError;
+        .upsert({ id: authData.user.id, nombre: validatedData.name, rol: 'paciente', edad: parseInt(validatedData.age) }, { onConflict: 'id' });
+      if (upsertError) throw upsertError;
 
       if (validatedData.personalNotes) {
         await supabase.from('notas').insert({
