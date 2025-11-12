@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Mail, Lock, Heart } from "lucide-react";
 
+// TEST: NEW REDESIGN ACTIVE - Nov 12
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -93,6 +94,8 @@ const Login = () => {
   const handleRegisterPsych = () => navigate('/registro-psicologo');
 
   const floatingEmojis = ['🌸', '🌼', '💙', '💜', '✨', '🦋', '🌈', '💗'];
+  
+  console.log("Login component rendered - logoNuevo:", logoNuevo);
   
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-background via-background to-primary/5">
