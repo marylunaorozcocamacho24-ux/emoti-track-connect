@@ -53,8 +53,9 @@ const Login = () => {
 
       if (error) throw error;
 
-      // Check if email is verified
-      if (!data.user.email_confirmed_at) {
+      // Check if email is verified (skip check in development for easier testing)
+      const requireEmailConfirmation = process.env.NODE_ENV !== 'development';
+      if (requireEmailConfirmation && !data.user.email_confirmed_at) {
         await supabase.auth.signOut();
         toast.error("Por favor verifica tu correo antes de iniciar sesión. Revisa tu bandeja de entrada.");
         setLoading(false);
