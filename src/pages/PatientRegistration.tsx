@@ -64,13 +64,8 @@ const PatientRegistration = () => {
         }
       });
 
-      if (authError) {
-        console.error('signUp error:', authError);
-        throw authError;
-      }
+      if (authError) throw authError;
       if (!authData.user) throw new Error("No se pudo crear el usuario");
-
-      console.debug('signUp data:', authData);
 
       // Update user's profile with age so patient can later select a psychologist
       const { error: updateError } = await supabase
@@ -86,17 +81,11 @@ const PatientRegistration = () => {
         });
       }
 
-      // If patient selected a psychologist during registration, create a linkage request (nota)
-      if (selectedPsychologist?.id) {
-        const noteContent = JSON.stringify({ type: 'solicitud_vinculacion', edad: parseInt(validatedData.age), paciente_nombre: validatedData.name });
-        const { error: noteError } = await supabase.from('notas').insert({
-          paciente_id: authData.user.id,
-          psicologo_id: selectedPsychologist.id,
-          contenido: noteContent,
-          fecha: new Date().toISOString()
-        });
-        if (noteError) throw new Error('No se pudo enviar la solicitud al psicólogo. Intenta más tarde.');
-        toast.success('Solicitud enviada al psicólogo. Espera su aprobación.');
+      // If patient selected a psychologist during registration, link them server-side
+      if (selectedPsychologist?.codigo_psicologo) {
+        const { data: linkOk, error: linkError } = await (supabase.rpc as any)('link_patient_to_psychologist', { _code: selectedPsychologist.codigo_psicologo, _age: parseInt(validatedData.age) });
+        if (linkError) throw new Error('Error al vincular con el psicólogo seleccionado. Intenta nuevamente.');
+        if (!linkOk) throw new Error('No se pudo vincular con el psicólogo seleccionado.');
       }
 
       toast.success("¡Registro exitoso! Redirigiendo...");

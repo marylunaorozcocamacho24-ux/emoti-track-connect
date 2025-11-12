@@ -43,8 +43,6 @@ const PsychologistDashboardNew = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [accessCode, setAccessCode] = useState<string>("");
-  const [requests, setRequests] = useState<any[]>([]);
-  const [requestsLoading, setRequestsLoading] = useState<boolean>(false);
   const [showCodeDialog, setShowCodeDialog] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -162,39 +160,6 @@ const PsychologistDashboardNew = () => {
           if (!profileError && profile?.codigo_psicologo) {
             setAccessCode(profile.codigo_psicologo);
           }
-          // load pending linkage requests for this psychologist
-          try {
-            setRequestsLoading(true);
-            const { data: notes } = await supabase
-              .from('notas')
-              .select('id, paciente_id, contenido, fecha')
-              .eq('psicologo_id', user.user.id);
-            const pending: any[] = [];
-            for (const n of (notes || [])) {
-              try {
-                const parsed = JSON.parse(n.contenido);
-                if (parsed?.type === 'solicitud_vinculacion') {
-                  // fetch patient basic info
-                  const { data: patientProfile } = await supabase.from('users').select('nombre, edad').eq('id', n.paciente_id).maybeSingle();
-                  pending.push({
-                    id: n.id,
-                    paciente_id: n.paciente_id,
-                    paciente_nombre: patientProfile?.nombre || parsed.paciente_nombre || 'Paciente',
-                    edad: patientProfile?.edad || parsed.edad || null,
-                    fecha: n.fecha,
-                    contenido: parsed
-                  });
-                }
-              } catch (e) {
-                // ignore unparsable notes
-              }
-            }
-            setRequests(pending);
-          } catch (e) {
-            console.warn('Error cargando solicitudes:', e);
-          } finally {
-            setRequestsLoading(false);
-          }
         }
       } catch (e) {
         console.error(e);
@@ -250,39 +215,6 @@ const PsychologistDashboardNew = () => {
     }
   };
 
-  const acceptRequest = async (req: any) => {
-    try {
-      if (!accessCode) throw new Error('Código de acceso no disponible.');
-      const edad = req.edad || 0;
-      const { data: linkOk, error: linkError } = await (supabase.rpc as any)('link_patient_to_psychologist', { _code: accessCode, _age: edad });
-      if (linkError) throw linkError;
-      if (!linkOk) throw new Error('No se pudo vincular al paciente.');
-
-      const { error: delError } = await supabase.from('notas').delete().eq('id', req.id);
-      if (delError) throw delError;
-
-      toast({ title: 'Paciente vinculado', description: `${req.paciente_nombre} ha sido vinculado correctamente.` });
-      setRequests(requests.filter(r => r.id !== req.id));
-      // reload to refresh patient list
-      window.location.reload();
-    } catch (e) {
-      console.error('Error aceptando solicitud:', e);
-      toast({ title: 'Error', description: 'No se pudo aceptar la solicitud.', variant: 'destructive' });
-    }
-  };
-
-  const rejectRequest = async (reqId: string) => {
-    try {
-      const { error } = await supabase.from('notas').delete().eq('id', reqId);
-      if (error) throw error;
-      setRequests(requests.filter(r => r.id !== reqId));
-      toast({ title: 'Solicitud rechazada', description: 'La solicitud ha sido eliminada.' });
-    } catch (e) {
-      console.error('Error rechazando solicitud:', e);
-      toast({ title: 'Error', description: 'No se pudo rechazar la solicitud.', variant: 'destructive' });
-    }
-  };
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -315,30 +247,6 @@ const PsychologistDashboardNew = () => {
 
           {/* Content */}
           <div className="p-6 space-y-6">
-            {requests.length > 0 && (
-              <Card className="p-4 mb-4">
-                <h3 className="text-lg font-semibold mb-2">Solicitudes de vinculación pendientes</h3>
-                {requestsLoading ? (
-                  <div className="text-sm text-muted-foreground">Cargando solicitudes...</div>
-                ) : (
-                  <div className="space-y-3">
-                    {requests.map((req) => (
-                      <div key={req.id} className="flex items-center justify-between border rounded-md p-3">
-                        <div>
-                          <div className="font-medium">{req.paciente_nombre}</div>
-                          <div className="text-sm text-muted-foreground">Edad: {req.edad || '-'}</div>
-                          <div className="text-xs text-muted-foreground">Solicitud: {new Date(req.fecha).toLocaleString('es-ES')}</div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={() => acceptRequest(req)} className="bg-emotion-happy text-white">Aceptar</Button>
-                          <Button size="sm" variant="outline" onClick={() => rejectRequest(req.id)}>Rechazar</Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            )}
             {/* Search bar */}
             <Card className="p-4">
               <div className="relative">

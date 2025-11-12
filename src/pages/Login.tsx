@@ -54,15 +54,13 @@ const Login = () => {
       if (error) throw error;
 
       // Check if email is verified (skip check in development for easier testing)
-        const requireEmailConfirmation = !import.meta.env.DEV;
+      const requireEmailConfirmation = process.env.NODE_ENV !== 'development';
       if (requireEmailConfirmation && !data.user.email_confirmed_at) {
         await supabase.auth.signOut();
         toast.error("Por favor verifica tu correo antes de iniciar sesión. Revisa tu bandeja de entrada.");
         setLoading(false);
         return;
       }
-
-        console.debug('signInWithPassword result:', data);
 
       // Fetch role and route automatically (priority: admin > psicologo > paciente)
       const { data: roles, error: rolesError } = await supabase
