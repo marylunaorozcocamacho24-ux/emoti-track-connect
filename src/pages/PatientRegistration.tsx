@@ -64,8 +64,13 @@ const PatientRegistration = () => {
         }
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error('signUp error:', authError);
+        throw authError;
+      }
       if (!authData.user) throw new Error("No se pudo crear el usuario");
+
+      console.debug('signUp data:', authData);
 
       // Update user's profile with age so patient can later select a psychologist
       const { error: updateError } = await supabase
