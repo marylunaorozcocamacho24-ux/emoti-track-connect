@@ -11,7 +11,6 @@ import brainCharacter from "@/assets/brain-character.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-import PsychologistSelectorDialog from "@/components/PsychologistSelectorDialog";
 
 const patientSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -21,7 +20,6 @@ const patientSchema = z.object({
   }, "La edad debe estar entre 13 y 120 años"),
   email: z.string().trim().email("Email inválido").max(255, "Email muy largo"),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-  accessCode: z.string().trim().min(1, "El código de acceso es requerido").max(50, "Código muy largo"),
   personalNotes: z.string().max(5000, "Las notas son muy largas").optional()
 });
 
@@ -32,18 +30,11 @@ const PatientRegistration = () => {
     age: '',
     email: '',
     password: '',
-    accessCode: '',
     personalNotes: ''
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [selectorOpen, setSelectorOpen] = useState(false);
-  const [selectedPsychologist, setSelectedPsychologist] = useState<{
-    id: string;
-    nombre: string;
-    especialidad?: string | null;
-    codigo_psicologo?: string | null;
-  } | null>(null);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,15 +43,6 @@ const PatientRegistration = () => {
 
     try {
       const validatedData = patientSchema.parse(formData);
-
-      // Validate psychologist access code using a secure RPC function
-      const { data: codeValidData, error: codeValidError } = await (supabase.rpc as any)('is_valid_psychologist_code', { _code: validatedData.accessCode });
-      if (codeValidError) {
-        throw new Error('No se pudo validar el código del psicólogo. Intenta más tarde.');
-      }
-      if (!codeValidData) {
-        throw new Error('El código de acceso no es válido. Verifica con tu psicólogo/a.');
-      }
 
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: validatedData.email,
@@ -77,10 +59,12 @@ const PatientRegistration = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("No se pudo crear el usuario");
 
-      // Server-side link: updates current user's record inside a SECURITY DEFINER function
-      const { data: linkOk, error: linkError } = await (supabase.rpc as any)('link_patient_to_psychologist', { _code: validatedData.accessCode, _age: parseInt(validatedData.age) });
-      if (linkError) throw new Error('Error al vincular el código. Intenta nuevamente.');
-      if (!linkOk) throw new Error('El código no es válido o no se pudo vincular.');
+      // Update user's profile with age so patient can later select a psychologist
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ edad: parseInt(validatedData.age) })
+        .eq('id', authData.user.id);
+      if (updateError) throw updateError;
 
       if (validatedData.personalNotes) {
         await supabase.from('notas').insert({
@@ -128,15 +112,6 @@ const PatientRegistration = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver
           </Button>
-          
-          <div className="flex justify-center">
-            <img 
-              src={brainCharacter} 
-              alt="Brain Character" 
-              className="w-24 h-24 object-contain drop-shadow-xl animate-scale-in"
-            />
-          </div>
-          
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10">
             <Brain className="w-5 h-5 text-secondary" />
             <span className="text-sm font-semibold text-secondary-foreground">Paciente</span>
@@ -204,36 +179,8 @@ const PatientRegistration = () => {
               {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
             </div>
 
-            <div>
-              <Label className="text-foreground font-medium">Psicólogo/a asignado *</Label>
-              <div className="mt-2 flex items-center gap-3">
-                <Button onClick={() => setSelectorOpen(true)} className="h-12">Seleccionar psicólogo</Button>
-                {selectedPsychologist ? (
-                  <div>
-                    <p className="font-medium">{selectedPsychologist.nombre}</p>
-                    <p className="text-sm text-muted-foreground">{selectedPsychologist.especialidad}</p>
-                    {selectedPsychologist.codigo_psicologo && (
-                      <p className="text-xs text-muted-foreground">Código: {selectedPsychologist.codigo_psicologo}</p>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No has seleccionado un psicólogo/a</p>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Selecciona a tu psicólogo/a desde la lista</p>
-            </div>
-
-            <PsychologistSelectorDialog
-              open={selectorOpen}
-              onOpenChange={(v) => setSelectorOpen(v)}
-              onSelect={(p) => {
-                setSelectedPsychologist(p as any);
-                // store the code so existing RPCs keep working
-                if (p.codigo_psicologo) {
-                  setFormData(prev => ({ ...prev, accessCode: p.codigo_psicologo || '' }));
-                }
-              }}
-            />
+            {/* Psicólogo/a asignado: la selección se realizará después del registro en el panel del paciente */}
+            
 
             <div>
               <Label htmlFor="personalNotes" className="text-foreground font-medium">Notas personales (opcional)</Label>
@@ -249,7 +196,7 @@ const PatientRegistration = () => {
             <Button
               type="submit"
               className="w-full h-12 gradient-button mt-6 border-0"
-              disabled={loading || !formData.name || !formData.age || !formData.email || !formData.password || !formData.accessCode}
+              disabled={loading || !formData.name || !formData.age || !formData.email || !formData.password}
             >
               {loading ? "Creando cuenta..." : "Crear mi cuenta"}
             </Button>

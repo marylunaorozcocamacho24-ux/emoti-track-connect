@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Navigation } from "@/components/Navigation";
 import EMIAssistant from "@/components/EMIAssistant";
 import PsychologistSuggestions from "@/components/PsychologistSuggestions";
+import PsychologistSelectorDialog from "@/components/PsychologistSelectorDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Smile, Meh, Frown, Heart, Brain, Zap, MessageCircle } from "lucide-react";
@@ -23,6 +24,8 @@ const PatientDashboardNew = () => {
   const [user, setUser] = useState<any>(null);
   const [userName, setUserName] = useState("");
   const [showEMI, setShowEMI] = useState(false);
+  const [userAge, setUserAge] = useState<number | null>(null);
+  const [selectorOpen, setSelectorOpen] = useState(false);
   const [emotionalState, setEmotionalState] = useState<string | undefined>();
   const [testCompleted, setTestCompleted] = useState(false);
   const [testResults, setTestResults] = useState<EmotionalTest>({
@@ -47,12 +50,21 @@ const PatientDashboardNew = () => {
 
     const { data: userData } = await supabase
       .from("users")
-      .select("nombre")
+      .select("nombre, edad")
       .eq("id", session.user.id)
       .single();
 
     if (userData) {
       setUserName(userData.nombre);
+      setUserAge(userData.edad || null);
+    }
+
+    // Check if the patient already has a psychologist assigned
+    try {
+      const { data: psyCode } = await (supabase.rpc as any)('get_user_psychologist_code', { _user_id: session.user.id });
+      if (!psyCode) setSelectorOpen(true);
+    } catch (err) {
+      console.warn('No se pudo comprobar psicólogo asignado:', err);
     }
   };
 
@@ -304,6 +316,22 @@ const PatientDashboardNew = () => {
         isOpen={showEMI} 
         onClose={() => setShowEMI(false)} 
         emotionalState={emotionalState}
+      />
+      <PsychologistSelectorDialog
+        open={selectorOpen}
+        onOpenChange={(v) => setSelectorOpen(v)}
+        onSelect={async (p) => {
+          try {
+            const { data: linkOk, error: linkError } = await (supabase.rpc as any)('link_patient_to_psychologist', { _code: p.codigo_psicologo || '', _age: userAge || 0 });
+            if (linkError) throw linkError;
+            if (!linkOk) throw new Error('No se pudo vincular con el psicólogo seleccionado.');
+            toast({ title: 'Listo', description: 'Psicólogo asignado correctamente.' });
+            setSelectorOpen(false);
+          } catch (error) {
+            console.error('Error vinculando psicólogo:', error);
+            toast({ title: 'Error', description: 'No se pudo asignar el psicólogo. Intenta más tarde.', variant: 'destructive' });
+          }
+        }}
       />
     </div>
   );
