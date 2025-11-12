@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import brainCharacter from "@/assets/brain-character-new.png";
-import emotitrackLogo from "@/assets/emotitrack-logo.jpg";
+import logoNuevo from "@/assets/logo-nuevo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Brain, Heart, Shield } from "lucide-react";
+import { Mail, Lock, Heart } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
-  // Single login: no need to select user type
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -98,148 +95,187 @@ const Login = () => {
   const floatingEmojis = ['🌸', '🌼', '💙', '💜', '✨', '🦋', '🌈', '💗'];
   
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-4">
-      {/* Floating decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute text-3xl opacity-20 animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${10 + Math.random() * 5}s`,
-            }}
-          >
-            {floatingEmojis[i % floatingEmojis.length]}
-          </div>
-        ))}
-      </div>
+    <div className="min-h-screen flex bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Left Section - Branding & Welcoming */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 relative overflow-hidden">
+        {/* Decorative floating elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute text-4xl opacity-10 animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${10 + Math.random() * 5}s`,
+              }}
+            >
+              {floatingEmojis[i % floatingEmojis.length]}
+            </div>
+          ))}
+        </div>
 
-      <div className="relative z-10 w-full max-w-md space-y-6 animate-fade-in">
-        {/* Logo and branding */}
-        <div className="text-center space-y-6">
-          {/* EmotiTrack Logo */}
-          <div className="flex justify-center mb-2">
+        <div className="relative z-10 max-w-md text-center space-y-8">
+          {/* Logo */}
+          <div className="flex justify-center animate-fade-in">
             <img 
-              src={emotitrackLogo} 
+              src={logoNuevo} 
               alt="EmotiTrack Logo" 
-              className="w-32 h-auto object-contain"
+              className="w-48 h-auto object-contain drop-shadow-lg"
             />
           </div>
 
-          <div className="flex justify-center mb-4">
-            <div className="relative animate-scale-in">
-              <img 
-                src={brainCharacter} 
-                alt="EmotiTrack Brain Character" 
-                className="w-40 h-40 object-contain drop-shadow-2xl"
-              />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 rounded-full blur-3xl -z-10 animate-pulse" />
-              
-              {/* Chat bubble */}
-              <div className="absolute -right-8 top-8 bg-white rounded-2xl rounded-br-sm px-4 py-3 shadow-lg border-2 border-primary/20 animate-fade-in max-w-[200px]" style={{ animationDelay: '0.5s' }}>
-                <p className="text-sm font-medium text-foreground leading-snug">
-                  ¡Bienvenido(a)! Prepárate para iniciar tu recorrido emocional.
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+          {/* Welcome Text */}
+          <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
               EmotiTrack
             </h1>
-            <p className="text-xl font-medium text-foreground/90">
+            <p className="text-xl font-semibold text-foreground">
               Tu bienestar emocional empieza aquí
             </p>
-            <p className="text-sm text-muted-foreground">
-              Bienvenido a tu recorrido emocional
+            <p className="text-muted-foreground leading-relaxed">
+              Conecta con psicólogos especializados, monitorea tu salud mental y accede a herramientas personalizadas para tu bienestar emocional.
             </p>
           </div>
-        </div>
 
-        {/* Single Login Card */}
-        <Card className="p-8 backdrop-blur-xl bg-card/80 border-2 border-border/50 shadow-2xl animate-fade-in rounded-3xl" style={{ animationDelay: '0.4s' }}>
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="text-center mb-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-3">
-                <Shield className="w-5 h-5 text-purple-500" />
-                <Heart className="w-5 h-5 text-primary" />
-                <Brain className="w-5 h-5 text-secondary" />
-                <span className="text-sm font-semibold text-foreground">Inicio de sesión</span>
+          {/* Benefits */}
+          <div className="space-y-3 pt-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 text-primary">
+                <Heart className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground">Ingresa a tu cuenta</h2>
-              <p className="text-sm text-muted-foreground">El sistema te llevará a tu panel según tu rol</p>
+              <div>
+                <p className="font-semibold text-foreground">Apoyo especializado</p>
+                <p className="text-sm text-muted-foreground">Conexión con psicólogos profesionales</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 text-secondary">
+                <Heart className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">Seguimiento continuo</p>
+                <p className="text-sm text-muted-foreground">Monitorea tu progreso emocional</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 text-accent">
+                <Heart className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">Privacidad garantizada</p>
+                <p className="text-sm text-muted-foreground">Tu información siempre protegida</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Section - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
+        <div className="w-full max-w-sm space-y-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center mb-6">
+            <img 
+              src={logoNuevo} 
+              alt="EmotiTrack" 
+              className="w-24 h-auto object-contain mx-auto mb-4"
+            />
+            <h1 className="text-3xl font-bold text-foreground">EmotiTrack</h1>
+          </div>
+
+          {/* Login Card */}
+          <div className="bg-white/80 dark:bg-card/80 backdrop-blur-md border border-border/50 rounded-2xl p-8 shadow-xl">
+            <div className="mb-6 space-y-2 text-center">
+              <h2 className="text-2xl font-bold text-foreground">Bienvenido</h2>
+              <p className="text-sm text-muted-foreground">Inicia sesión en tu cuenta</p>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="email" className="text-foreground font-medium">Correo electrónico</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
-                  placeholder="tu@email.com"
-                />
+            <form onSubmit={handleLogin} className="space-y-5">
+              {/* Email Input */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-foreground font-semibold text-sm">
+                  Correo electrónico
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="pl-10 h-11 rounded-lg border border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 bg-background/50 text-foreground placeholder:text-muted-foreground/60"
+                    placeholder="tu@email.com"
+                  />
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="password" className="text-foreground font-medium">Contraseña</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="mt-2 h-12 rounded-xl border-2 border-border/50 focus:border-primary/50 bg-background/50"
-                  placeholder="••••••••"
-                />
+              {/* Password Input */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-foreground font-semibold text-sm">
+                  Contraseña
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="pl-10 h-11 rounded-lg border border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 bg-background/50 text-foreground placeholder:text-muted-foreground/60"
+                    placeholder="••••••••"
+                  />
+                </div>
               </div>
 
+              {/* Login Button */}
               <Button
                 type="submit"
-                className="w-full h-12 gradient-button mt-6 border-0"
+                className="w-full h-11 bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all duration-200 rounded-lg font-semibold text-white border-0 mt-6"
                 disabled={loading}
               >
-                {loading ? "Iniciando sesión..." : "Continuar"}
+                {loading ? "Iniciando sesión..." : "Inicia sesión"}
               </Button>
+            </form>
 
-              <div className="text-center pt-4 space-y-1">
-                <p className="text-sm text-muted-foreground">
-                  ¿Eres paciente?{' '}
-                  <button
-                    type="button"
-                    onClick={handleRegisterPatient}
-                    className="text-primary hover:underline font-semibold"
-                  >
-                    Regístrate aquí
-                  </button>
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  ¿Eres psicólogo/a?{' '}
-                  <button
-                    type="button"
-                    onClick={handleRegisterPsych}
-                    className="text-primary hover:underline font-semibold"
-                  >
-                    Crea tu perfil
-                  </button>
-                </p>
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border/30" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-card/80 text-muted-foreground">O</span>
               </div>
             </div>
-          </form>
-        </Card>
 
-        {/* Footer text */}
-        <div className="text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <p className="text-muted-foreground text-xs">
-            🌼 Versión Beta · Cuidando tu salud mental con tecnología
-          </p>
+            {/* Registration Links */}
+            <div className="space-y-3">
+              <Button
+                type="button"
+                onClick={handleRegisterPatient}
+                variant="outline"
+                className="w-full h-11 rounded-lg border-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5 font-semibold text-primary transition-all duration-200"
+              >
+                Registrarse como paciente
+              </Button>
+              <Button
+                type="button"
+                onClick={handleRegisterPsych}
+                variant="outline"
+                className="w-full h-11 rounded-lg border-2 border-secondary/30 hover:border-secondary/50 hover:bg-secondary/5 font-semibold text-secondary transition-all duration-200"
+              >
+                Registrarse como psicólogo
+              </Button>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center text-xs text-muted-foreground">
+            <p>🌼 Versión Beta · Tu salud mental es nuestra prioridad</p>
+          </div>
         </div>
       </div>
     </div>
