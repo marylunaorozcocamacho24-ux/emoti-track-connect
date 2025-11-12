@@ -11,6 +11,7 @@ import brainCharacter from "@/assets/brain-character.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import PsychologistSelectorDialog from "@/components/PsychologistSelectorDialog";
 
 const patientSchema = z.object({
   name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre es muy largo"),
@@ -32,6 +33,13 @@ const PatientRegistration = () => {
     password: '',
     personalNotes: ''
   });
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const [selectedPsychologist, setSelectedPsychologist] = useState<{
+    id: string;
+    nombre: string;
+    especialidad?: string | null;
+    codigo_psicologo?: string | null;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -71,6 +79,13 @@ const PatientRegistration = () => {
           paciente_id: authData.user.id,
           contenido: validatedData.personalNotes
         });
+      }
+
+      // If patient selected a psychologist during registration, link them server-side
+      if (selectedPsychologist?.codigo_psicologo) {
+        const { data: linkOk, error: linkError } = await (supabase.rpc as any)('link_patient_to_psychologist', { _code: selectedPsychologist.codigo_psicologo, _age: parseInt(validatedData.age) });
+        if (linkError) throw new Error('Error al vincular con el psicólogo seleccionado. Intenta nuevamente.');
+        if (!linkOk) throw new Error('No se pudo vincular con el psicólogo seleccionado.');
       }
 
       toast.success("¡Registro exitoso! Redirigiendo...");
@@ -179,7 +194,30 @@ const PatientRegistration = () => {
               {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
             </div>
 
-            {/* Psicólogo/a asignado: la selección se realizará después del registro en el panel del paciente */}
+            <div>
+              <Label className="text-foreground font-medium">Psicólogo/a asignado *</Label>
+              <div className="mt-2 flex items-center gap-3">
+                <Button onClick={() => setSelectorOpen(true)} className="h-12">Seleccionar psicólogo</Button>
+                {selectedPsychologist ? (
+                  <div>
+                    <p className="font-medium">{selectedPsychologist.nombre}</p>
+                    <p className="text-sm text-muted-foreground">{selectedPsychologist.especialidad || "--"}</p>
+                    {selectedPsychologist.codigo_psicologo && <p className="text-xs text-muted-foreground">Código: {selectedPsychologist.codigo_psicologo}</p>}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No has seleccionado un psicólogo/a</p>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Selecciona a tu psicólogo/a desde la lista</p>
+            </div>
+
+            <PsychologistSelectorDialog
+              open={selectorOpen}
+              onOpenChange={(v) => setSelectorOpen(v)}
+              onSelect={(p) => {
+                setSelectedPsychologist(p as any);
+              }}
+            />
             
 
             <div>
