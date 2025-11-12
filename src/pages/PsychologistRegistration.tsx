@@ -61,16 +61,18 @@ const PsychologistRegistration = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("No se pudo crear el usuario");
 
-      const { error: updateError } = await supabase
+      const { error: upsertError } = await supabase
         .from('users')
-        .update({
+        .upsert({
+          id: authData.user.id,
+          nombre: validatedData.name,
+          rol: 'psicologo',
           especialidad: validatedData.specialty,
           numero_licencia: validatedData.licenseNumber,
           institucion: validatedData.institution || null
-        })
-        .eq('id', authData.user.id);
+        }, { onConflict: 'id' });
 
-      if (updateError) throw updateError;
+      if (upsertError) throw upsertError;
 
   toast.success(`¡Registro exitoso! Tu perfil fue creado correctamente.`);
       setTimeout(() => navigate('/psicologo'), 1500);
