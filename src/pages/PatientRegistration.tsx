@@ -65,19 +65,14 @@ const PatientRegistration = () => {
       });
 
       if (authError) throw authError;
-          // Insertar nuevo usuario en la tabla 'users'
-          const { error: insertError } = await supabase
-            .from('users')
-            .insert([
-              {
-                id: authData.user.id,
-                email: validatedData.email,
-                nombre: validatedData.name,
-                rol: 'paciente',
-                edad: parseInt(validatedData.age)
-              }
-            ]);
-          if (insertError) throw insertError;
+      if (!authData.user) throw new Error("No se pudo crear el usuario");
+
+      // Update user's profile with age so patient can later select a psychologist
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ edad: parseInt(validatedData.age) })
+        .eq('id', authData.user.id);
+      if (updateError) throw updateError;
 
       if (validatedData.personalNotes) {
         await supabase.from('notas').insert({
