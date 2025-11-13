@@ -15,6 +15,7 @@ import DailyEvaluation from "./pages/DailyEvaluation";
 import EvaluationResults from "./pages/EvaluationResults";
 import PatientHistory from "./pages/PatientHistory";
 import PatientProfile from "./pages/PatientProfile";
+import PatientMessaging from "./pages/PatientMessaging";
 import PatientProfileDetail from "./pages/PatientProfileDetail";
 import AlertsView from "./pages/AlertsView";
 import PsychologistSettings from "./pages/PsychologistSettings";
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/paciente/tests" element={<ProtectedRoute requiredRole="paciente"><PatientTests /></ProtectedRoute>} />
           <Route path="/paciente/tests/responder/:assignmentId" element={<ProtectedRoute requiredRole="paciente"><TakeTest /></ProtectedRoute>} />
           <Route path="/paciente/tests/resultados/:assignmentId" element={<ProtectedRoute requiredRole="paciente"><TestResults /></ProtectedRoute>} />
+          <Route path="/paciente/mensajeria" element={<ProtectedRoute requiredRole="paciente"><PatientMessaging /></ProtectedRoute>} />
           
           {/* Protected Psychologist Routes */}
           <Route path="/psicologo" element={<ProtectedRoute requiredRole="psicologo"><PsychologistDashboardNew /></ProtectedRoute>} />

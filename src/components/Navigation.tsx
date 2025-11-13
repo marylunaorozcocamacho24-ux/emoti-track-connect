@@ -16,6 +16,7 @@ export const Navigation = ({ userType = 'patient' }: NavigationProps) => {
               <NavItem to="/paciente" icon={Home} label="Inicio" />
               <NavItem to="/evaluacion-diaria" icon={PenTool} label="Evaluación" />
               <NavItem to="/historial" icon={BarChart3} label="Historial" />
+              <NavItem to="/paciente/mensajeria" icon={MessageSquare} label="Mensajes" />
               <NavItem to="/perfil" icon={User} label="Perfil" />
             </>
           ) : (
